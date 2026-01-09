@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { OpenSidebar } from "./OpenSidebar";
+import { AllMenu } from "./AllMenu"; 
 
 /* =====================
    layout
@@ -87,8 +88,6 @@ const MenuGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid #ddd;
-  padding: 3px;
 `;
 
 /* =====================
@@ -100,6 +99,7 @@ const Main = styled.main`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 
 
@@ -145,6 +145,21 @@ const SearchBox = styled.div`
 
 export function UserSearchPage() {
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
+  const [isAllMenuVisible, setIsAllMenuVisible] = useState(false);
+  type MenuKey = "purchase" | "stock" | "customer";
+  const [selectedMenus, setSelectedMenus] = useState<MenuKey[]>([]);
+
+  const handleToggleClick = () => {
+  setIsAllMenuVisible(!isAllMenuVisible);
+
+  if (!isAllMenuVisible) {
+    setSelectedMenus(["purchase", "stock", "customer"]);
+  } else {
+    setSelectedMenus([]);
+  }
+};
+
+
   
   return (
     <PageWrapper>
@@ -164,9 +179,9 @@ export function UserSearchPage() {
       <Sidebar
       onMouseLeave={() => setHoveredMenu(null)}
       >
-  <ToggleButton>
-    ＞
-  </ToggleButton>
+  <ToggleButton onClick={handleToggleClick}>
+            {isAllMenuVisible ? "x" : "＞"}
+          </ToggleButton>
 
   <MenuGroup onMouseEnter={() => setHoveredMenu("purchase")}>
   <SquareBox>
@@ -195,6 +210,15 @@ export function UserSearchPage() {
     onMouseLeave={() => setHoveredMenu(null)}
   />
 )}
+
+{selectedMenus.map((menu) => (
+  <OpenSidebar
+    key={menu}
+    menu={menu}
+    onMouseEnter={() => {}}
+    onMouseLeave={() => {}}
+  />
+))}
         {/* Main */}
         <Main>
        <SearchBox>
