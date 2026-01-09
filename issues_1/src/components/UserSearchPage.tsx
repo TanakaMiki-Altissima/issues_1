@@ -4,6 +4,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { OpenSidebar } from "./OpenSidebar";
 
 /* =====================
    layout
@@ -38,45 +39,31 @@ const LogoImage = styled.img`
 const Content = styled.div`
   flex: 1;
   display: flex;
+  position: relative;
 `;
 
 /* =====================
    sidebar
 ===================== */
 
-const Sidebar = styled.aside<{ $isOpen: boolean }>`
-  width: ${({ $isOpen }) => ($isOpen ? "240px" : "49px")};
+const Sidebar = styled.aside`
+  width: 49px;
   border-right: 1px solid #ddd;
-  padding: 0 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: width 0.3s ease;
-  overflow: ${({ $isOpen }) => ($isOpen ? "hidden" : "visible")};
-  position: relative;
 `;
 
-const CloseButton = styled.button`
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: #1565c0;
-  cursor: pointer;
-`;
-
-const SquareBox = styled.div<{ $isOpen: boolean }>`
+const SquareBox = styled.div`
   width: 49px;
   height: 49px;
-  border: ${({ $isOpen }) => ($isOpen ? "none" : "1px solid #ccc")};
   display: flex;
   align-items: center;
+  border: 1px solid #ccc;
   justify-content: center;
 `;
 
-const ToggleAllButton = styled.button`
+const ToggleButton = styled.button`
   top: 8px;
   right: 8px;
   background: none;
@@ -84,11 +71,7 @@ const ToggleAllButton = styled.button`
   font-size: 18px;
   color: #1565c0; 
   cursor: pointer;
-`;
-
-const MenuSection = styled.div`
-  margin-top: 24px;
-  margin-bottom: 16px;
+  margin: 10px 0;
 `;
 
 const MenuTitle = styled.h3`
@@ -99,43 +82,13 @@ const MenuTitle = styled.h3`
   text-align: center;
 `;
 
-const MenuItem = styled.p`
-  margin: 4px 0;
-  padding-left: 8px;
-
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  cursor: pointer;
-`;
-
-const MenuItemIcon = styled.img`
-  width: 14px;
-  height: 14px;
-  object-fit: contain;
-  flex-shrink: 0;
-  background-color: #1565c0; 
-`;
-
-const HoverMenu = styled.div`
-  position: absolute;
-  top: 0;
-  left: 100%;
-  margin-left: 8px;
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 8px 12px;
-  min-width: 180px;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-`;
-
 const MenuGroup = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 1px solid #ddd;
+  padding: 3px;
 `;
 
 /* =====================
@@ -191,26 +144,8 @@ const SearchBox = styled.div`
 ===================== */
 
 export function UserSearchPage() {
-  const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const [isAllOpen, setIsAllOpen] = useState(false);
-
-  const toggleMenu = (menu: string) => {
-    if (isAllOpen) return;
-    setOpenMenu(openMenu === menu ? null : menu);
-  };
-
-  const openAllMenus = () => {
-    setIsAllOpen(true);
-  };
-
-  const closeAllMenus = () => {
-    setIsAllOpen(false);
-    setOpenMenu(null);
-  };
-
-  const isOpen = (menu: string) =>
-    isAllOpen || openMenu === menu;
-
+  const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
+  
   return (
     <PageWrapper>
       {/* Header */}
@@ -224,131 +159,42 @@ export function UserSearchPage() {
       </Header>
 
       <Content>
-        {/* Sidebar */}
-        <Sidebar $isOpen={isAllOpen}>
 
-  {/* トグルボタン */}
-  {!isAllOpen && (
-  <SquareBox $isOpen={false}>
-    <ToggleAllButton onClick={() => setIsAllOpen(true)}>
-      ＞
-    </ToggleAllButton>
-  </SquareBox>
-)}
+      {/* Sidebar */}
+      <Sidebar
+      onMouseLeave={() => setHoveredMenu(null)}
+      >
+  <ToggleButton>
+    ＞
+  </ToggleButton>
 
-{/* 閉じる */}
-{isAllOpen && (
-  <CloseButton onClick={() => setIsAllOpen(false)}>
-    ×
-  </CloseButton>
-)}
-
-  {/* 買取査定 */}
-  <MenuGroup
-  onMouseEnter={() => !isAllOpen && setOpenMenu("purchase")}
-  onMouseLeave={() => !isAllOpen && setOpenMenu(null)}
->
-  <SquareBox $isOpen={isAllOpen}>
+  <MenuGroup onMouseEnter={() => setHoveredMenu("purchase")}>
+  <SquareBox>
     <MenuTitle>買取査定</MenuTitle>
   </SquareBox>
-
-  {/* ▶ 展開状態：サイドバー内に表示 */}
-  {isAllOpen && (
-    <>
-      <MenuItem>
-        <MenuItemIcon src="fabric_mark_triangle.png" />
-        新規買取査定
-      </MenuItem>
-      <MenuItem>
-        <MenuItemIcon src="fabric_mark_triangle.png" />
-        買取契約の締結
-      </MenuItem>
-      <MenuItem>
-        <MenuItemIcon src="text_kakko_kari.png" />
-        仮入庫前一覧
-      </MenuItem>
-      <MenuItem>
-        <MenuItemIcon src="text_kakko_kari.png" />
-        査定ランク編集
-      </MenuItem>
-    </>
-  )}
-
-  {/* ▶ 閉状態：右側に HoverMenu */}
-  {!isAllOpen && openMenu === "purchase" && (
-    <HoverMenu>
-      <MenuItem>
-        <MenuItemIcon src="fabric_mark_triangle.png" />
-        新規買取査定
-      </MenuItem>
-      <MenuItem>
-        <MenuItemIcon src="fabric_mark_triangle.png" />
-        買取契約の締結
-      </MenuItem>
-      <MenuItem>
-        <MenuItemIcon src="text_kakko_kari.png" />
-        仮入庫前一覧
-      </MenuItem>
-      <MenuItem>
-        <MenuItemIcon src="text_kakko_kari.png" />
-        査定ランク編集
-      </MenuItem>
-    </HoverMenu>
-  )}
 </MenuGroup>
 
-
-
-  {/* 入庫 */}
-  <MenuGroup
-  onMouseEnter={() => !isAllOpen && setOpenMenu("stock")}
-  onMouseLeave={() => !isAllOpen && setOpenMenu(null)}
->
-  <SquareBox $isOpen={isAllOpen}>
+<MenuGroup onMouseEnter={() => setHoveredMenu("stock")}>
+  <SquareBox>
     <MenuTitle>入庫</MenuTitle>
   </SquareBox>
-
-  {!isAllOpen && openMenu === "stock" && (
-    <HoverMenu>
-        <MenuItem>
-  <MenuItemIcon src="text_kakko_kari.png" alt="kari_3" />
-  入庫サブメニュー
-</MenuItem>
-<MenuItem>
-  <MenuItemIcon src="text_kakko_kari.png" alt="kari_4" />
-  入庫サブメニュー
-</MenuItem>
-    </HoverMenu>
-  )}
 </MenuGroup>
 
-
-  {/* 顧客情報 */}
-  <MenuGroup
-  onMouseEnter={() => !isAllOpen && setOpenMenu("customer")}
-  onMouseLeave={() => !isAllOpen && setOpenMenu(null)}
->
-  <SquareBox $isOpen={isAllOpen}>
+<MenuGroup onMouseEnter={() => setHoveredMenu("customer")}>
+  <SquareBox>
     <MenuTitle>顧客情報</MenuTitle>
   </SquareBox>
-
-  {!isAllOpen && openMenu === "customer" && (
-    <HoverMenu>
-        <MenuItem>
-  <MenuItemIcon src="text_kakko_kari.png" alt="kari_5" />
-  新規顧客登録
-</MenuItem>
-<MenuItem>
-  <MenuItemIcon src="text_kakko_kari.png" alt="kari_6" />
-  Croooober ID検索
-</MenuItem>
-    </HoverMenu>
-  )}
 </MenuGroup>
 
 </Sidebar>
 
-
+{hoveredMenu && (
+  <OpenSidebar
+    menu={hoveredMenu}
+    onMouseEnter={() => setHoveredMenu(hoveredMenu)}
+    onMouseLeave={() => setHoveredMenu(null)}
+  />
+)}
         {/* Main */}
         <Main>
        <SearchBox>
