@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { OpenSidebar } from "./OpenSidebar";
 import { AllMenu } from "./AllMenu"; 
+import { mockCustomers } from "@/mocks/customers";
 
 /* =====================
    layout
@@ -138,6 +139,22 @@ const SearchBox = styled.div`
   }
 `;
 
+const ResultTable = styled.div`
+  margin-top: 32px;
+  width: 800px;
+  background: #e3f2fd; /* 薄青 */
+  border-radius: 6px;
+`;
+
+const ResultRow = styled.div`
+  display: grid;
+  grid-template-columns: 160px 160px 200px 1fr;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #0d47a1;
+`;
+
+
 
 /* =====================
    component
@@ -149,8 +166,11 @@ export function UserSearchPage() {
   type MenuKey = "purchase" | "stock" | "customer";
   const [selectedMenus, setSelectedMenus] = useState<MenuKey[]>([]);
 
+  const [showResult, setShowResult] = useState(false);
+
   const handleToggleClick = () => {
   setIsAllMenuVisible(!isAllMenuVisible);
+
 
   if (!isAllMenuVisible) {
     setSelectedMenus(["purchase", "stock", "customer"]);
@@ -203,6 +223,12 @@ export function UserSearchPage() {
 
 </Sidebar>
 
+{isAllMenuVisible && (
+  <AllMenu
+    onClose={() => setIsAllMenuVisible(false)}
+  />
+)}
+
 {hoveredMenu && (
   <OpenSidebar
     menu={hoveredMenu}
@@ -221,19 +247,41 @@ export function UserSearchPage() {
 ))}
         {/* Main */}
         <Main>
-       <SearchBox>
-    <p>顧客情報の検索</p>
+  <div>
+    <SearchBox>
+      <p>顧客情報の検索</p>
 
-    <div className="search-input">
-      <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
-      <input
-        placeholder="キーワード・電話番号で検索"
-      />
-    </div>
+      <div className="search-input">
+        <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
+        <input placeholder="キーワード・電話番号で検索" />
+      </div>
 
-    <button>検索</button>
-  </SearchBox>
+      <button onClick={() => setShowResult(true)}>検索</button>
+    </SearchBox>
+
+    {showResult && (
+      <ResultTable>
+        <ResultRow>
+          <div>Croooober ID</div>
+          <div>氏名</div>
+          <div>電話番号</div>
+          <div>住所</div>
+        </ResultRow>
+      
+    {mockCustomers.map((customer) => (
+      <ResultRow key={customer.crooooberId}>
+        <div>{customer.crooooberId}</div>
+        <div>{customer.name}</div>
+        <div>{customer.phone}</div>
+        <div>{customer.address}</div>
+      </ResultRow>
+    ))}
+    </ResultTable>
+  )}
+    
+  </div>
 </Main>
+
       </Content>
     </PageWrapper>
   );

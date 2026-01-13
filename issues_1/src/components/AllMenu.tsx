@@ -46,7 +46,6 @@ export function AllMenu({ menu, onClose }: AllMenuProps) {
     <AllMenuWrapper>
       <CloseButton onClick={onClose}>✕</CloseButton>
       <MenuSection>
-        <h3>メニュー</h3>
         {menu === "purchase" && (
           <>
           <MenuItem>新規買取査定</MenuItem>
