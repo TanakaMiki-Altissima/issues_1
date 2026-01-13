@@ -1,288 +1,227 @@
 "use client";
 
 import { useState } from "react";
-import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { OpenSidebar } from "./OpenSidebar";
-import { AllMenu } from "./AllMenu"; 
+import { AllMenu } from "./AllMenu";
 import { mockCustomers } from "@/mocks/customers";
 
-/* =====================
-   layout
-===================== */
-
-const PageWrapper = styled.div`
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-`;
-
-const HeaderLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 20px;
-`;
-
-const LogoImage = styled.img`
-  width: 49px;
-  height: 49px;
-  object-fit: contain;
-  background-color: #fff001;
-`;
-
-const Content = styled.div`
-  flex: 1;
-  display: flex;
-  position: relative;
-`;
-
-/* =====================
-   sidebar
-===================== */
-
-const Sidebar = styled.aside`
-  width: 49px;
-  border-right: 1px solid #ddd;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const SquareBox = styled.div`
-  width: 49px;
-  height: 49px;
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  justify-content: center;
-`;
-
-const ToggleButton = styled.button`
-  top: 8px;
-  right: 8px;
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: #1565c0; 
-  cursor: pointer;
-  margin: 10px 0;
-`;
-
-const MenuTitle = styled.h3`
-  margin: 0;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1.2;
-  text-align: center;
-`;
-
-const MenuGroup = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-/* =====================
-   main content
-===================== */
-
-const Main = styled.main`
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-`;
-
-
-const SearchBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-
-  .search-input {
-    position: relative;
-  }
-
-  .search-icon {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-    color: #888;
-    pointer-events: none;
-  }
-
-  input {
-    width: 280px;
-    padding: 8px 8px 8px 36px;
-    border-radius: 5px;
-    color: #888;
-    background-color: #f5f5f5;
-  }
-
-  button {
-    padding: 8px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    background-color: #1565c0;
-    color: white;
-  }
-`;
-
-const ResultTable = styled.div`
-  margin-top: 32px;
-  width: 800px;
-  background: #e3f2fd; /* 薄青 */
-  border-radius: 6px;
-`;
-
-const ResultRow = styled.div`
-  display: grid;
-  grid-template-columns: 160px 160px 200px 1fr;
-  padding: 12px 16px;
-  font-weight: 600;
-  color: #0d47a1;
-`;
-
-
-
-/* =====================
-   component
-===================== */
+type MenuKey = "purchase" | "stock" | "customer";
 
 export function UserSearchPage() {
-  const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
+  const [hoveredMenu, setHoveredMenu] = useState<MenuKey | null>(null);
   const [isAllMenuVisible, setIsAllMenuVisible] = useState(false);
-  type MenuKey = "purchase" | "stock" | "customer";
+  console.log ('isAllMenuVisible',isAllMenuVisible)
   const [selectedMenus, setSelectedMenus] = useState<MenuKey[]>([]);
-
   const [showResult, setShowResult] = useState(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
 
   const handleToggleClick = () => {
-  setIsAllMenuVisible(!isAllMenuVisible);
+    setIsAllMenuVisible((prev) => !prev);
+    setHoveredMenu(null);
 
+    if (!isAllMenuVisible) {
+      setSelectedMenus(["purchase", "stock", "customer"]);
+    } else {
+      setSelectedMenus([]);
+    }
+  };
 
-  if (!isAllMenuVisible) {
-    setSelectedMenus(["purchase", "stock", "customer"]);
-  } else {
-    setSelectedMenus([]);
+  const handleClose = () => {
+    console.log('クリックされました')
+    setIsAllMenuVisible(false)
   }
-};
 
-
-  
   return (
-    <PageWrapper>
-      {/* Header */}
-      <Header>
-        <HeaderLeft>
-          <LogoImage src="/capital_u.png" alt="logo" />
-          <h1>メンテナンスノート</h1>
-        </HeaderLeft>
-        
-        <h2>U練馬店</h2>
-      </Header>
+    <div className="h-screen flex flex-col">
+      {/* ================= Header ================= */}
+      <header className="flex items-center justify-between border-b border-gray-300 ">
+        <div className="flex items-center gap-5">
+          <img
+            src="/capital_u.png"
+            alt="logo"
+            className="w-[49px] h-[49px] object-contain bg-yellow-300"
+          />
+          <h1 className="text-xl font-semibold">メンテナンスノート</h1>
+        </div>
+        <h2 className="text-lg font-medium">U練馬店</h2>
+      </header>
 
-      <Content>
+      {/* ================= Content ================= */}
+      <div className="flex flex-1 relative">
+        {/* ================= Sidebar ================= */}
+        <aside
+          className="w-[49px] border-r border-gray-300 flex flex-col items-center"
+          onMouseLeave={() => setHoveredMenu(null)}
+        >
+          <button
+            onClick={handleToggleClick}
+            className="my-2 text-[18px] text-blue-700 cursor-pointer"
+            >
+            ＞
+          </button>
 
-      {/* Sidebar */}
-      <Sidebar
-      onMouseLeave={() => setHoveredMenu(null)}
-      >
-  <ToggleButton onClick={handleToggleClick}>
-            {isAllMenuVisible ? "x" : "＞"}
-          </ToggleButton>
+          <MenuButton
+            title="買取査定"
+            onHover={() => setHoveredMenu("purchase")}
+          />
 
-  <MenuGroup onMouseEnter={() => setHoveredMenu("purchase")}>
-  <SquareBox>
-    <MenuTitle>買取査定</MenuTitle>
-  </SquareBox>
-</MenuGroup>
+          <MenuButton
+            title="入庫"
+            onHover={() => setHoveredMenu("stock")}
+          />
 
-<MenuGroup onMouseEnter={() => setHoveredMenu("stock")}>
-  <SquareBox>
-    <MenuTitle>入庫</MenuTitle>
-  </SquareBox>
-</MenuGroup>
+          <MenuButton
+            title="顧客情報"
+            onHover={() => setHoveredMenu("customer")}
+          />
+        </aside>
 
-<MenuGroup onMouseEnter={() => setHoveredMenu("customer")}>
-  <SquareBox>
-    <MenuTitle>顧客情報</MenuTitle>
-  </SquareBox>
-</MenuGroup>
+        {/* ================= All Menu ================= */}
+        {isAllMenuVisible && (
+          <AllMenu onClose={() => handleClose()} />
+        )}
 
-</Sidebar>
+        {/* ================= Hover Sidebar ================= */}
+        {!isAllMenuVisible && hoveredMenu && (
+          <OpenSidebar
+            menu={hoveredMenu}
+            onMouseEnter={() => setHoveredMenu(hoveredMenu)}
+            onMouseLeave={() => setHoveredMenu(null)}
+          />
+        )}
 
-{isAllMenuVisible && (
-  <AllMenu
-    onClose={() => setIsAllMenuVisible(false)}
-  />
-)}
+        {/* ================= Main ================= */}
+        <main className="flex-1 flex justify-center items-center relative">
+          <div>
+            {/* Search */}
+            <div className="flex items-center gap-4">
+              <p className="font-medium">顧客情報の検索</p>
 
-{hoveredMenu && (
-  <OpenSidebar
-    menu={hoveredMenu}
-    onMouseEnter={() => setHoveredMenu(hoveredMenu)}
-    onMouseLeave={() => setHoveredMenu(null)}
-  />
-)}
+              <div className="relative">
+                <FontAwesomeIcon
+                  icon={faMagnifyingGlass}
+                  className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  placeholder="キーワード・電話番号で検索"
+                  className="
+                    w-[280px]
+                    pl-9 pr-2 py-2
+                    rounded
+                    bg-gray-100
+                    text-gray-600
+                    outline-none
+                  "
+                />
+              </div>
 
-{selectedMenus.map((menu) => (
-  <OpenSidebar
-    key={menu}
-    menu={menu}
-    onMouseEnter={() => {}}
-    onMouseLeave={() => {}}
-  />
-))}
-        {/* Main */}
-        <Main>
-  <div>
-    <SearchBox>
-      <p>顧客情報の検索</p>
+              <button
+                onClick={() => setShowResult(true)}
+                className="px-5 py-2 rounded bg-blue-700 text-white"
+              >
+                検索
+              </button>
+            </div>
 
-      <div className="search-input">
-        <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
-        <input placeholder="キーワード・電話番号で検索" />
-      </div>
+            {/* Customers */}
+            {showResult && (
+              <div className="mt-8 w-[800px] bg-blue-100 rounded">
+                <div className="grid grid-cols-[160px_160px_200px_1fr] px-4 py-3 font-semibold">
+                  <div>Croooober ID</div>
+                  <div>氏名</div>
+                  <div>電話番号</div>
+                  <div>住所</div>
+              </div>
 
-      <button onClick={() => setShowResult(true)}>検索</button>
-    </SearchBox>
-
-    {showResult && (
-      <ResultTable>
-        <ResultRow>
-          <div>Croooober ID</div>
-          <div>氏名</div>
-          <div>電話番号</div>
-          <div>住所</div>
-        </ResultRow>
-      
     {mockCustomers.map((customer) => (
-      <ResultRow key={customer.crooooberId}>
+      <div
+        key={customer.crooooberId}
+        onClick={() => setSelectedCustomerId(customer.crooooberId)}
+        className={`
+          grid grid-cols-[160px_160px_200px_1fr]
+          px-4 py-3 cursor-pointer bg-white border-b border-gray-300
+          ${
+            selectedCustomerId === customer.crooooberId
+              ? "bg-blue-50"
+              : "hover:bg-gray-50"
+          }
+        `}
+      >
         <div>{customer.crooooberId}</div>
         <div>{customer.name}</div>
         <div>{customer.phone}</div>
         <div>{customer.address}</div>
-      </ResultRow>
+      </div>
     ))}
-    </ResultTable>
-  )}
-    
   </div>
-</Main>
+)}
 
-      </Content>
-    </PageWrapper>
+
+                {showResult && (
+  <div className="mt-6 flex gap-6 justify-center">
+    {/* 戻る */}
+    <button
+      onClick={() => {
+        setShowResult(false);
+        setSelectedCustomerId(null);
+      }}
+      className="
+        w-48
+        px-6 py-2
+        rounded
+        bg-white
+        text-blue-700
+        border border-blue-700
+        hover:bg-blue-50
+      "
+    >
+      戻る
+    </button>
+
+    {/* 決定 */}
+    <button
+      disabled={!selectedCustomerId}
+      className="
+        w-48
+        px-6 py-2
+        rounded
+        bg-blue-700
+        text-white
+        hover:bg-blue-800
+        disabled:cursor-not-allowed
+      "
+    >
+      決定
+    </button>
+  </div>
+)}
+
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+/* ================= Menu Button ================= */
+
+function MenuButton({
+  title,
+  onHover,
+}: {
+  title: string;
+  onHover: () => void;
+}) {
+  return (
+    <div
+      onMouseEnter={onHover}
+      className="flex flex-col items-center cursor-pointer"
+    >
+      <div className="w-[49px] h-[49px] flex items-center justify-center border border-gray-300">
+        <h3 className="text-sm text-center leading-tight">{title}</h3>
+      </div>
+    </div>
   );
 }
