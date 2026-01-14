@@ -13,6 +13,7 @@ export function AllMenu({ onClose }: AllMenuProps) {
         border-r border-gray-300
         p-4
         bg-white
+        z-10
       "
     >
       {/* Close button */}
