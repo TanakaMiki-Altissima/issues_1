@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { UserSearchPage } from "@/components/UserSearchPage";
+import type { Meta, StoryObj } from '@storybook/react';
+import { UserSearchPage } from '@/components/UserSearchPage';
 
 const meta: Meta<typeof UserSearchPage> = {
-  title: "Pages/UserSearch",
+  title: 'Pages/UserSearch',
   component: UserSearchPage,
 };
 

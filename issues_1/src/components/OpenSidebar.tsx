@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 type Props = {
   menu: string;
@@ -6,12 +6,8 @@ type Props = {
   onMouseLeave: () => void;
 };
 
-export function OpenSidebar({
-  menu,
-  onMouseEnter,
-  onMouseLeave,
-}: Props) {
-    const Item = ({ children }: { children: React.ReactNode }) => (
+export function OpenSidebar({ menu, onMouseEnter, onMouseLeave }: Props) {
+  const Item = ({ children }: { children: React.ReactNode }) => (
     <div
       className="
         w-full
@@ -21,11 +17,7 @@ export function OpenSidebar({
         flex items-center gap-2
       "
     >
-       <img
-      src="public/images/kaden_camera_compact.png"
-      alt=""
-      className="w-[1em] h-[1em]"
-    />
+      <img src="/text_kakko_kari.png" alt="" className="w-[1em] h-[1em]" />
       {children}
     </div>
   );
@@ -43,7 +35,7 @@ export function OpenSidebar({
         min-w-[200px]
       "
     >
-      {menu === "purchase" && (
+      {menu === 'purchase' && (
         <>
           <Item>新規買取査定</Item>
           <Item>買取契約の締結</Item>
@@ -52,14 +44,14 @@ export function OpenSidebar({
         </>
       )}
 
-      {menu === "stock" && (
+      {menu === 'stock' && (
         <>
           <Item>入庫サブメニュー</Item>
           <Item>入庫サブメニュー</Item>
         </>
       )}
 
-      {menu === "customer" && (
+      {menu === 'customer' && (
         <>
           <Item>新規顧客情報</Item>
           <Item>Croooober ID検索</Item>
