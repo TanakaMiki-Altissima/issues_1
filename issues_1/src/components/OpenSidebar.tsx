@@ -15,6 +15,7 @@ export function OpenSidebar({ menu, onMouseEnter, onMouseLeave }: Props) {
         cursor-pointer
         text-left
         flex items-center gap-2
+        hover:bg-gray-100
       "
     >
       <img src="/text_kakko_kari.png" alt="" className="w-[1em] h-[1em]" />
@@ -33,6 +34,7 @@ export function OpenSidebar({ menu, onMouseEnter, onMouseLeave }: Props) {
         flex flex-col items-center
         py-2
         min-w-[200px]
+        z-10
       "
     >
       {menu === 'purchase' && (
@@ -43,14 +45,12 @@ export function OpenSidebar({ menu, onMouseEnter, onMouseLeave }: Props) {
           <Item>査定ランク編集</Item>
         </>
       )}
-
       {menu === 'stock' && (
         <>
           <Item>入庫サブメニュー</Item>
           <Item>入庫サブメニュー</Item>
         </>
       )}
-
       {menu === 'customer' && (
         <>
           <Item>新規顧客情報</Item>
