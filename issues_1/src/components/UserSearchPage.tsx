@@ -31,21 +31,30 @@ export function UserSearchPage() {
     setIsAllMenuVisible(false);
   };
 
-  const [searchName, setSearchName] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [filteredCustomers, setFilteredCustomers] = useState(mockCustomers);
 
   const handleSearch = () => {
-    const result = mockCustomers.filter((customer) => customer.name.includes(searchName));
+  const keyword = searchKeyword.trim();
 
-    setFilteredCustomers(result);
-    setShowResult(true);
-    setSelectedCustomerId(null);
-  };
+  const result = mockCustomers.filter((customer) => {
+    return (
+      customer.name.includes(keyword) ||
+      customer.phone.includes(keyword) ||
+      customer.address.includes(keyword) ||
+      customer.crooooberId.includes(keyword)
+    );
+  });
+
+  setFilteredCustomers(result);
+  setShowResult(true);
+  setSelectedCustomerId(null);
+};
 
   return (
     <div className="h-screen flex flex-col">
       {/* ================= Header ================= */}
-      <header className="flex items-center justify-between border-b border-gray-300 ">
+      <header className="flex items-center justify-between border-b border-gray-300 bg-gray-100">
         <div className="flex items-center gap-5">
           <img src="/capital_u.png" alt="logo" className="w-[49px] h-[49px] object-contain bg-yellow-300" />
           <h1 className="text-xl font-semibold">メンテナンスノート</h1>
@@ -98,8 +107,8 @@ export function UserSearchPage() {
 
                 <input
                   placeholder="キーワード・電話番号で検索"
-                  value={searchName}
-                  onChange={(e) => setSearchName(e.target.value)}
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
                   className="
                     w-[280px]
                     pl-9 pr-2 py-2
@@ -196,7 +205,7 @@ function MenuButton({ title, onHover }: { title: string; onHover: () => void }) 
   return (
     <div onMouseEnter={onHover} className="flex flex-col items-center cursor-pointer">
       <div className="w-[49px] h-[49px] flex items-center justify-center border border-gray-300">
-        <h3 className="text-sm text-center leading-tight">{title}</h3>
+        <h3 className="text-sm text-center leading-tight p-2">{title}</h3>
       </div>
     </div>
   );

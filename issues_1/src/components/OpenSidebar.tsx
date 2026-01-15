@@ -6,6 +6,12 @@ type Props = {
   onMouseLeave: () => void;
 };
 
+const menuTopMap: Record<string, number> = {
+  purchase: 43,
+  stock: 91,
+  customer: 140,
+};
+
 export function OpenSidebar({ menu, onMouseEnter, onMouseLeave }: Props) {
   const Item = ({ children }: { children: React.ReactNode }) => (
     <div
@@ -18,7 +24,7 @@ export function OpenSidebar({ menu, onMouseEnter, onMouseLeave }: Props) {
         hover:bg-gray-100
       "
     >
-      <img src="/text_kakko_kari.png" alt="" className="w-[1em] h-[1em]" />
+      <img src="/text_kakko_kari.png" alt="kari" className="w-[1em] h-[1em]" />
       {children}
     </div>
   );
@@ -27,8 +33,9 @@ export function OpenSidebar({ menu, onMouseEnter, onMouseLeave }: Props) {
     <aside
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      style={{ top: `${menuTopMap[menu] ?? 40}px` }}
       className="
-        absolute top-[40px] left-[49px]
+        absolute left-[48px]
         bg-white
         border border-gray-300
         flex flex-col items-center
@@ -45,12 +52,14 @@ export function OpenSidebar({ menu, onMouseEnter, onMouseLeave }: Props) {
           <Item>査定ランク編集</Item>
         </>
       )}
+
       {menu === 'stock' && (
         <>
           <Item>入庫サブメニュー</Item>
           <Item>入庫サブメニュー</Item>
         </>
       )}
+
       {menu === 'customer' && (
         <>
           <Item>新規顧客情報</Item>
