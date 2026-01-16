@@ -1,5 +1,5 @@
 
-import React from 'react';
+// import React from 'react';
 
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -55,26 +55,8 @@ describe('UserSearchPage', () => {
   expect(screen.getByText('Croooober ID検索')).toBeInTheDocument();
 });
 
-  test('検索ボタンで結果が表示される', () => {
-  expect(true).toBe(true);
-});
-
-  test('検索欄に何も入力しないで検索ボタンを押すと全件表示される', () => {
-  expect(true).toBe(true);
-});
-
-  test('検索欄に存在しないID、電話番号、氏名、住所を入力して検索しても何も表示されない', async () => {
-  mockApiClient.get.mockResolvedValue({
-      ok: false
-  });
-});
-
-  test('顧客を選択すると決定ボタンが有効になる', () => {
-  expect(true).toBe(true);
-});
-
-  test('戻るボタンで結果が非表示になる', () => {
-  expect(true).toBe(true);
-});
+//   test('顧客を選択すると決定ボタンが有効になる', () => {
+//   expect(true).toBe(true);
+// });
 
 });
