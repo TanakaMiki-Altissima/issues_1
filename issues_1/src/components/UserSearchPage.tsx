@@ -5,33 +5,11 @@ import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { OpenSidebar } from './OpenSidebar';
-import { AllMenu } from './AllMenu';
 import { mockCustomers } from '@/mocks/customers';
 
-type MenuKey = 'purchase' | 'stock' | 'customer';
-
 export function UserSearchPage() {
-  const [hoveredMenu, setHoveredMenu] = useState<MenuKey | null>(null);
-  const [isAllMenuVisible, setIsAllMenuVisible] = useState(false);
-  const [selectedMenus, setSelectedMenus] = useState<MenuKey[]>([]);
   const [showResult, setShowResult] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
-
-  const handleToggleClick = () => {
-    setIsAllMenuVisible((prev) => !prev);
-    setHoveredMenu(null);
-
-    if (!isAllMenuVisible) {
-      setSelectedMenus(['purchase', 'stock', 'customer']);
-    } else {
-      setSelectedMenus([]);
-    }
-  };
-
-  const handleClose = () => {
-    setIsAllMenuVisible(false);
-  };
 
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filteredCustomers, setFilteredCustomers] = useState(mockCustomers);
@@ -64,18 +42,6 @@ export function UserSearchPage() {
         {/* ================= Sidebar ================= */}
            <div className="flex flex-1 relative">
     <Sidebar />
-
-        {/* ================= All Menu ================= */}
-        {isAllMenuVisible && <AllMenu onClose={() => handleClose()} />}
-
-        {/* ================= Hover Sidebar ================= */}
-        {!isAllMenuVisible && hoveredMenu && (
-          <OpenSidebar
-            menu={hoveredMenu}
-            onMouseEnter={() => setHoveredMenu(hoveredMenu)}
-            onMouseLeave={() => setHoveredMenu(null)}
-          />
-        )}
 
         {/* ================= Main ================= */}
         <main className="flex-1 flex justify-center items-center relative">
@@ -181,17 +147,5 @@ export function UserSearchPage() {
         </main>
       </div>
     </div>
-  );
-}
-
-/* ================= Menu Button ================= */
-
-function MenuButton({ title, onHover }: { title: string; onHover: () => void }) {
-  return (
-    <div onMouseEnter={onHover} className="flex flex-col items-center cursor-pointer">
-      <div className="w-[49px] h-[49px] flex items-center justify-center border border-gray-300">
-        <h3 className="text-sm text-center leading-tight p-2">{title}</h3>
-      </div>
-    </div>
-  );
-}
+  </div>
+  )};
