@@ -40,6 +40,7 @@
     "@types/styled-components": "^5.1.36",
     "@vitest/browser-playwright": "^4.0.16",
     "@vitest/coverage-v8": "^4.0.16",
+    "autoprefixer": "^10.4.23",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "eslint-plugin-storybook": "10.2.0-alpha.10",
