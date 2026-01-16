@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { Header } from '@/components/layout/Header';
+import { Sidebar } from '@/components/layout/Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { OpenSidebar } from './OpenSidebar';
@@ -54,31 +56,14 @@ export function UserSearchPage() {
   return (
     <div className="h-screen flex flex-col">
       {/* ================= Header ================= */}
-      <header className="flex items-center justify-between border-b border-gray-300 bg-gray-100">
-        <div className="flex items-center gap-5">
-          <img src="/capital_u.png" alt="logo" className="w-[49px] h-[49px] object-contain bg-yellow-300" />
-          <h1 className="text-xl font-semibold">メンテナンスノート</h1>
-        </div>
-        <h2 className="text-lg font-medium">UPGARAGE練馬店</h2>
-      </header>
-
+        <div className="h-screen flex flex-col">
+  <Header />
+</div>
       {/* ================= Content ================= */}
       <div className="flex flex-1 relative">
         {/* ================= Sidebar ================= */}
-        <aside
-          className="w-[49px] border-r border-gray-300 flex flex-col items-center"
-          onMouseLeave={() => setHoveredMenu(null)}
-        >
-          <button onClick={handleToggleClick} className="my-2 text-[18px] text-blue-700 cursor-pointer">
-            ＞
-          </button>
-
-          <MenuButton title="買取査定" onHover={() => setHoveredMenu('purchase')} />
-
-          <MenuButton title="入庫" onHover={() => setHoveredMenu('stock')} />
-
-          <MenuButton title="顧客情報" onHover={() => setHoveredMenu('customer')} />
-        </aside>
+           <div className="flex flex-1 relative">
+    <Sidebar />
 
         {/* ================= All Menu ================= */}
         {isAllMenuVisible && <AllMenu onClose={() => handleClose()} />}
