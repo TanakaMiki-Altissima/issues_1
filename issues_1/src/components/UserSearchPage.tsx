@@ -6,6 +6,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { mockCustomers } from '@/mocks/customers';
+import { useRouter } from 'next/navigation';
 
 export function UserSearchPage() {
   const [showResult, setShowResult] = useState(false);
@@ -30,6 +31,8 @@ export function UserSearchPage() {
   setShowResult(true);
   setSelectedCustomerId(null);
 };
+
+const router = useRouter();
 
   return (
     <div className="h-screen flex flex-col">
@@ -126,6 +129,10 @@ export function UserSearchPage() {
                 {/* 決定 */}
                 <button
                   disabled={!selectedCustomerId}
+                  onClick={() => {
+                    if (!selectedCustomerId) return;
+                    router.push(`/users/${selectedCustomerId}`);
+                  }}
                   className="
                     w-48
                     px-6 py-2
