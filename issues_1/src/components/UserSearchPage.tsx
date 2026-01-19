@@ -34,15 +34,12 @@ export function UserSearchPage() {
   return (
     <div className="h-screen flex flex-col">
       {/* ================= Header ================= */}
-        <div className="h-screen flex flex-col">
-  <Header />
-</div>
+      <Header />
       {/* ================= Content ================= */}
-      <div className="flex flex-1 relative">
+    <div className="flex flex-1 relative">
         {/* ================= Sidebar ================= */}
-           <div className="flex flex-1 relative">
-    <Sidebar />
-
+      <div className="flex flex-1 relative">
+        <Sidebar />
         {/* ================= Main ================= */}
         <main className="flex-1 flex justify-center items-center relative">
           <div>

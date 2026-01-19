@@ -12,60 +12,70 @@ export function Sidebar() {
   const [selectedMenus, setSelectedMenus] = useState<MenuKey[]>([]);
 
   const handleToggleClick = () => {
-      setIsAllMenuVisible((prev) => !prev);
-      setHoveredMenu(null);
-  
-      if (!isAllMenuVisible) {
-        setSelectedMenus(['purchase', 'stock', 'customer']);
-      } else {
-        setSelectedMenus([]);
-      }
-    };
-  
-    const handleClose = () => {
-      setIsAllMenuVisible(false);
-    };
+    setIsAllMenuVisible((prev) => !prev);
+    setHoveredMenu(null);
+
+    if (!isAllMenuVisible) {
+      setSelectedMenus(['purchase', 'stock', 'customer']);
+    } else {
+      setSelectedMenus([]);
+    }
+  };
+
+  const handleClose = () => {
+    setIsAllMenuVisible(false);
+  };
 
   return (
-<aside
-          className="w-[49px] border-r border-gray-300 flex flex-col items-center"
-          onMouseLeave={() => setHoveredMenu(null)}
+    <>
+      {/* ================= Sidebar ================= */}
+      <aside
+        className="w-[49px] border-r border-gray-300 flex flex-col items-center"
+        onMouseLeave={() => setHoveredMenu(null)}
+      >
+        <button
+          onClick={handleToggleClick}
+          className="my-2 text-[18px] text-blue-700 cursor-pointer"
         >
-          <button onClick={handleToggleClick} className="my-2 text-[18px] text-blue-700 cursor-pointer">
-            ＞
-          </button>
+          ＞
+        </button>
 
-          <MenuButton title="買取査定" onHover={() => setHoveredMenu('purchase')} />
+        <MenuButton title="買取査定" onHover={() => setHoveredMenu('purchase')} />
+        <MenuButton title="入庫" onHover={() => setHoveredMenu('stock')} />
+        <MenuButton title="顧客情報" onHover={() => setHoveredMenu('customer')} />
+      </aside>
 
-          <MenuButton title="入庫" onHover={() => setHoveredMenu('stock')} />
+      {/* ================= All Menu ================= */}
+      {isAllMenuVisible && <AllMenu onClose={handleClose} />}
 
-          <MenuButton title="顧客情報" onHover={() => setHoveredMenu('customer')} />
-        </aside>
+      {/* ================= Hover Sidebar ================= */}
+      {!isAllMenuVisible && hoveredMenu && (
+        <OpenSidebar
+          menu={hoveredMenu}
+          onMouseEnter={() => setHoveredMenu(hoveredMenu)}
+          onMouseLeave={() => setHoveredMenu(null)}
+        />
+      )}
+    </>
+  );
+}
 
-        {/* ================= All Menu ================= */}
+/* ================= Menu Button ================= */
 
-        {isAllMenuVisible && <AllMenu onClose={() => handleClose()} />}
-
-        {/* ================= Hover Sidebar ================= */}
-
-        {!isAllMenuVisible && hoveredMenu && (
-          <OpenSidebar
-            menu={hoveredMenu}
-            onMouseEnter={() => setHoveredMenu(hoveredMenu)}
-            onMouseLeave={() => setHoveredMenu(null)}
-          />
-        )}
-
-{/* ================= Menu Button ================= */}
-
-function MenuButton({ title, onHover }: { title: string; onHover: () => void }) {
+function MenuButton({
+  title,
+  onHover,
+}: {
+  title: string;
+  onHover: () => void;
+}) {
   return (
     <div onMouseEnter={onHover} className="flex flex-col items-center cursor-pointer">
       <div className="w-[49px] h-[49px] flex items-center justify-center border border-gray-300">
-        <h3 className="text-sm text-center leading-tight p-2">{title}</h3>
+        <h3 className="text-sm text-center leading-tight p-2">
+          {title}
+        </h3>
       </div>
     </div>
   );
 }
-
-};
