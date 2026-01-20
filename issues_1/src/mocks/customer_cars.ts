@@ -18,6 +18,14 @@ export const mockCustomer_cars: CustomerCar[] = [
   },
   {
     id: 'car-2',
+    ownerId: '12345678901234',
+    manufacturer: 'MAZDA',
+    car_name: 'ROADSTAR',
+    vehicle_inspection: '2027-03-01',
+    image: 'kaden_camera_compact.png',
+  },
+  {
+    id: 'car-3',
     ownerId: '32323343022332',
     manufacturer: 'MAZDA',
     car_name: 'ROADSTAR',
