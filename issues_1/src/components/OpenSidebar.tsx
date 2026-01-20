@@ -1,0 +1,71 @@
+'use client';
+
+type Props = {
+  menu: string;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+};
+
+const menuTopMap: Record<string, number> = {
+  purchase: 43,
+  stock: 91,
+  customer: 140,
+};
+
+export function OpenSidebar({ menu, onMouseEnter, onMouseLeave }: Props) {
+  const Item = ({ children }: { children: React.ReactNode }) => (
+    <div
+      className="
+        w-full
+        px-4 py-2
+        cursor-pointer
+        text-left
+        flex items-center gap-2
+        hover:bg-gray-100
+      "
+    >
+      <img src="/text_kakko_kari.png" alt="kari" className="w-[1em] h-[1em]" />
+      {children}
+    </div>
+  );
+
+  return (
+    <aside
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      style={{ top: `${menuTopMap[menu] ?? 40}px` }}
+      className="
+        absolute left-[48px]
+        bg-white
+        border border-gray-300
+        flex flex-col items-center
+        py-2
+        min-w-[200px]
+        z-10
+      "
+    >
+      {menu === 'purchase' && (
+        <>
+          <Item>新規買取査定</Item>
+          <Item>買取契約の締結</Item>
+          <Item>仮入庫前一覧</Item>
+          <Item>査定ランク編集</Item>
+        </>
+      )}
+
+      {menu === 'stock' && (
+        <>
+          <Item>入庫サブメニュー</Item>
+          <Item>入庫サブメニュー</Item>
+        </>
+      )}
+
+      {menu === 'customer' && (
+        <>
+          <Item>新規顧客情報</Item>
+          <Item>Croooober ID検索</Item>
+        </>
+      )}
+    </aside>
+  );
+}
