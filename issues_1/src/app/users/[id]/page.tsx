@@ -23,6 +23,7 @@ export default function UserDetailsPage() {
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState(customer.name);
+  const [activeTab, setActiveTab] = useState('top');
 
   const customerCars = mockCustomer_cars.filter(
     (car) => car.ownerId === customerId
@@ -33,6 +34,28 @@ export default function UserDetailsPage() {
   const diffTime = inspectionDate.getTime() - today.getTime();
   const diffDays = diffTime / (1000 * 60 * 60 * 24);
   return diffDays <= 30 && diffDays >= 0;
+  };
+
+  const tabs = [
+    { id: 'top', label: 'トップ', color: 'blue' },
+    { id: 'message', label: 'メッセージ', color: 'red' },
+    { id: 'considering', label: '検討中パーツ', color: 'yellow' },
+    { id: 'purchase', label: '購入履歴', color: 'yellow' },
+    { id: 'assessment', label: '査定中', color: 'green' },
+    { id: 'buyback', label: '買取履歴', color: 'green' },
+    { id: 'reservation', label: '作業予約', color: 'gray' },
+    { id: 'work', label: '作業履歴', color: 'gray' },
+  ];
+
+  const getTabStyles = (tab: typeof tabs[0]) => {
+    const isActive = activeTab === tab.id;
+    const baseStyles = 'w-60 px-6 py-4 transition-colors';
+    
+    if (isActive) {
+      return `${baseStyles} bg-${tab.color}-300 text-${tab.color}-900`;
+    }
+    
+    return `${baseStyles} bg-${tab.color}-100 hover:bg-white hover:text-${tab.color}-700`;
   };
 
 
@@ -166,114 +189,103 @@ return (
 
   {/* ===== 右カラム ===== */}
   <div className="flex-1 ml-6">
-    <div className="flex gap-1 font-semibold">
-        <div>
-        <img src="/fabric_mark_triangle.png" alt="icon1" className="w-[1em] h-[1em]" />
-        <button className="
-                    w-60
-                    px-6 py-4
-                    bg-blue-300
-                    hover:bg-white
-                    hover:text-blue-700
-                  "
-                >
-                  トップ
-                </button>
-        </div>
-        <button className="
-                    w-60
-                    bg-red-100
-                    hover:bg-white
-                    hover:text-red-700
-                  "
-                >
-                  メッセージ
-                </button>
-        <button className="
-                    w-60
-                    bg-yellow-100
-                    hover:bg-white
-                    hover:text-yellow-700
-                  "
-                >
-                  検討中パーツ
-                </button>
-        <button className="
-                    w-60
-                    bg-yellow-100
-                    hover:bg-white
-                    hover:text-yellow-700
-                  "
-                >
-                  購入履歴
-                </button>
-        <button className="
-                    w-60
-                    bg-green-100
-                    hover:bg-white
-                    hover:text-green-700
-                  "
-                >
-                  査定中
-                </button>
-        <button className="
-                    w-60
-                    bg-green-100
-                    hover:bg-white
-                    hover:text-green-700
-                  "
-                >
-                  買取履歴
-                </button>
-        <button className="
-                    w-60
-                    bg-gray-100
-                    hover:bg-white
-                    hover:text-gray-700
-                  "
-                >
-                  作業予約
-                </button>
-        <button className="
-                    w-60
-                    bg-gray-100
-                    hover:bg-white
-                    hover:text-gray-700
-                  "
-                >
-                  作業履歴
-                </button>
+    <div className="flex gap-1 font-semibold border-b border-gray-300">
+        {tabs.map((tab, index) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={
+              activeTab === tab.id
+                ? `w-60 px-6 py-4 bg-white text-${tab.color}-700 relative`
+                : `w-60 px-6 py-4 bg-${tab.color}-100 `
+            }
+          >
+            {index === 0 && activeTab === 'top'}
+            {tab.label}
+          </button>
+        ))}
     </div>
-    <div className="border-b border-gray-300" >
-    <h2 className="text-xl font-semibold mb-4">取引履歴</h2>
-    </div>
-    <div className="flex items-center gap-4 p-4 border-b border-gray-300">
-              <div className="relative">
-                <FontAwesomeIcon
-                  icon={faMagnifyingGlass}
-                  className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
-                />
-                <input placeholder="キーワードで検索" className="
-                    w-[280px]
-                    pl-9 pr-2 py-2
-                    rounded
-                    bg-gray-100
-                    text-gray-600
-                    outline-none
-                    "
-                />
-              </div>
 
-              <button className="px-5 py-2 rounded bg-blue-700 text-white">
-                検索
-              </button>
-    </div>
-    <div className="flex items-center gap-4 p-4 border-b border-gray-300">
+    {/* タブコンテンツ */}
+    <div className="mt-6">
+      {/* 共通検索エリア */}
+      <div className="flex items-center gap-4 p-4 border-b border-gray-300">
+        <div className="relative">
+          <FontAwesomeIcon
+            icon={faMagnifyingGlass}
+            className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
+          />
+          <input 
+            placeholder="キーワードで検索" 
+            className="w-[280px] pl-9 pr-2 py-2 rounded bg-gray-100 text-gray-600 outline-none"
+          />
+        </div>
+        <button className="px-5 py-2 rounded bg-blue-700 text-white">
+          検索
+        </button>
+      </div>
+      <div className="flex items-center gap-4 p-4 border-b border-gray-300">
         <p>件</p>
         <p>メモ付きのみ</p>
-    </div>
+      </div>
 
-    <p>購入履歴 / 作業履歴 / タイムラインなど</p>
+      {/* タブ別コンテンツ */}
+      {activeTab === 'top' && (
+        <div className="p-4">
+          <h2 className="text-xl font-semibold mb-4">取引履歴</h2>
+          <p>購入履歴 / 作業履歴 / タイムラインなど</p>
+        </div>
+      )}
+
+      {activeTab === 'message' && (
+        <div className="p-4">
+          <h2 className="text-xl font-semibold mb-4">メッセージ</h2>
+          <p>メッセージ機能内容</p>
+        </div>
+      )}
+
+      {activeTab === 'considering' && (
+        <div className="p-4">
+          <h2 className="text-xl font-semibold mb-4">検討中パーツ</h2>
+          <p>検討中パーツ内容</p>
+        </div>
+      )}
+
+      {activeTab === 'purchase' && (
+        <div className="p-4">
+          <h2 className="text-xl font-semibold mb-4">購入履歴</h2>
+          <p>購入履歴内容</p>
+        </div>
+      )}
+
+      {activeTab === 'assessment' && (
+        <div className="p-4">
+          <h2 className="text-xl font-semibold mb-4">査定中</h2>
+          <p>査定中内容</p>
+        </div>
+      )}
+
+      {activeTab === 'buyback' && (
+        <div className="p-4">
+          <h2 className="text-xl font-semibold mb-4">買取履歴</h2>
+          <p>買取履歴内容</p>
+        </div>
+      )}
+
+      {activeTab === 'reservation' && (
+        <div className="p-4">
+          <h2 className="text-xl font-semibold mb-4">作業予約</h2>
+          <p>作業予約内容</p>
+        </div>
+      )}
+
+      {activeTab === 'work' && (
+        <div className="p-4">
+          <h2 className="text-xl font-semibold mb-4">作業履歴</h2>
+          <p>作業履歴内容</p>
+        </div>
+      )}
+    </div>
   </div>
     </main>
     </div>
