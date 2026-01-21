@@ -1,4 +1,4 @@
-// 査定履歴
+// 査定中
 
 export type Inspections = {
   date: string;

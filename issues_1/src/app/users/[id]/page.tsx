@@ -20,6 +20,7 @@ import {
 import { useParams } from 'next/navigation';
 import { mockCustomers } from '@/mocks/customers';
 import {mockCustomer_cars} from '@/mocks/customer_cars';
+import { mockTimeline } from '@/mocks/timeline';
 
 export default function UserDetailsPage() {
   const params = useParams<{ id: string }>();
@@ -57,7 +58,7 @@ export default function UserDetailsPage() {
     { id: 'buyback', label: '買取履歴', color: 'green',icon: faClock },
     { id: 'reservation', label: '作業予約', color: 'gray',icon: faWrench },
     { id: 'work', label: '作業履歴', color: 'gray',icon: faClock },
-  ];
+  ]as const;
 
   const getTabStyles = (tab: typeof tabs[0]) => {
     const isActive = activeTab === tab.id;
@@ -69,6 +70,14 @@ export default function UserDetailsPage() {
     
     return `${baseStyles} bg-${tab.color}-100 hover:bg-white hover:text-${tab.color}-700`;
   };
+
+  const tabColorMap = {
+  blue: 'bg-blue-100',
+  red: 'bg-red-100',
+  yellow: 'bg-yellow-100',
+  green: 'bg-green-100',
+  gray: 'bg-gray-100',
+} as const;
 
 
 return (
@@ -213,9 +222,18 @@ return (
             }
           >
             {index === 0 && activeTab === 'top'}
+            {activeTab && (
+          <span
+            className={`
+              absolute top-0 left-0
+              h-[4px] w-full
+              ${tabColorMap[tab.color]}
+            `}
+          />
+        )}
             <FontAwesomeIcon icon={tab.icon} />
             <br/>
-            {tab.label}
+            <span>{tab.label}</span>
           </button>
         ))}
     </div>
@@ -245,11 +263,109 @@ return (
 
       {/* タブ別コンテンツ */}
       {activeTab === 'top' && (
-        <div className="p-4">
-          <h2 className="text-xl font-semibold mb-4">取引履歴</h2>
-          <p>購入履歴 / 作業履歴 / タイムラインなど</p>
+  <div className="p-4">
+    <h2 className="text-xl font-semibold mb-6">取引履歴</h2>
+
+    <div className="space-y-3">
+      {mockTimeline.map((item) => (
+        <div
+          key={item.id}
+          className="flex items-center gap-4 py-3 border-b border-gray-300"
+        >
+          {/* ===== 左：画像 ===== */}
+          <div className="relative w-14 h-14 flex-shrink-0">
+            <img
+              src="/car_white.png"
+              alt="gazou"
+              className="w-full h-full object-contain bg-blue-100"
+            />
+
+            {/* コメントありアイコン */}
+            {'comment' in item && item.comment && (
+              <FontAwesomeIcon
+                icon={faMessage}
+                className="absolute -top-1 -right-1 text-orange-500 text-sm"
+              />
+            )}
+          </div>
+
+          {/* ===== 日付 & 車種 ===== */}
+          <div className="w-40">
+            <p className="text-sm text-gray-500">
+              {item.date}
+            </p>
+
+            {item.car_name ? (
+              <p className="text-sm text-gray-800">
+                {item.car_name}
+              </p>
+            ) : (
+              <p className="text-sm text-red-600">
+                未設定
+              </p>
+            )}
+          </div>
+
+          {/* ===== 履歴種別 ===== */}
+          <div className="w-24">
+            {item.type === 'purchase' && (
+              <span className="bg-yellow-100 text-sm font-medium">
+                購入履歴
+              </span>
+            )}
+            {item.type === 'work' && (
+              <span className="bg-green-100 text-sm font-medium">
+                作業履歴
+              </span>
+            )}
+            {item.type === 'inspection' && (
+              <span className="bg-green-100 text-sm font-medium">
+                査定中
+              </span>
+            )}
+            {item.type === 'reservation' && (
+              <span className="bg-gray-100 text-sm font-medium">
+                作業予約
+              </span>
+            )}
+            {item.type === 'consideration' && (
+              <span className="bg-yellow-100 text-sm font-medium">
+                検討中パーツ
+              </span>
+            )}
+          </div>
+
+          {/* ===== タイトル ===== */}
+          <div className="flex-1">
+            {'title' in item && (
+              <p className="font-medium">
+                {item.title}
+              </p>
+            )}
+          </div>
+
+          {/* ===== 右端：価格 / 店舗 ===== */}
+          {'price' in item && (
+            <div className="flex items-center gap-3 whitespace-nowrap">
+    {/* 金額 */}
+    <p className="text-gray-500">
+      ¥{item.price}
+    </p>
+
+    {/* 店舗名 + ＞ */}
+    <div className="flex items-center gap-1 text-sm text-gray-500">
+      <span>{item.store_name}</span>
+      <span className="text-gray-400">＞</span>
+    </div>
+  </div>
+          )}
         </div>
-      )}
+      ))}
+    </div>
+  </div>
+)}
+
+
 
       {activeTab === 'message' && (
         <div className="p-4">
