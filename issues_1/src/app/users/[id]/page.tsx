@@ -4,7 +4,19 @@ import { useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass,
+    faHouse,
+  faComment,
+  faStar,
+  faWrench,
+  faMessage
+ } from '@fortawesome/free-solid-svg-icons';
+import {
+  faComment as faCommentRegular,
+  faStar as faStarRegular,
+  faClock,
+  faChartBar,
+} from '@fortawesome/free-regular-svg-icons';
 import { useParams } from 'next/navigation';
 import { mockCustomers } from '@/mocks/customers';
 import {mockCustomer_cars} from '@/mocks/customer_cars';
@@ -37,14 +49,14 @@ export default function UserDetailsPage() {
   };
 
   const tabs = [
-    { id: 'top', label: 'トップ', color: 'blue' },
-    { id: 'message', label: 'メッセージ', color: 'red' },
-    { id: 'considering', label: '検討中パーツ', color: 'yellow' },
-    { id: 'purchase', label: '購入履歴', color: 'yellow' },
-    { id: 'assessment', label: '査定中', color: 'green' },
-    { id: 'buyback', label: '買取履歴', color: 'green' },
-    { id: 'reservation', label: '作業予約', color: 'gray' },
-    { id: 'work', label: '作業履歴', color: 'gray' },
+    { id: 'top', label: 'トップ', color: 'blue',icon: faHouse },
+    { id: 'message', label: 'メッセージ', color: 'red',icon: faComment },
+    { id: 'considering', label: '検討中パーツ', color: 'yellow',icon: faStar },
+    { id: 'purchase', label: '購入履歴', color: 'yellow',icon: faClock },
+    { id: 'assessment', label: '査定中', color: 'green',icon: faChartBar },
+    { id: 'buyback', label: '買取履歴', color: 'green',icon: faClock },
+    { id: 'reservation', label: '作業予約', color: 'gray',icon: faWrench },
+    { id: 'work', label: '作業履歴', color: 'gray',icon: faClock },
   ];
 
   const getTabStyles = (tab: typeof tabs[0]) => {
@@ -189,7 +201,7 @@ return (
 
   {/* ===== 右カラム ===== */}
   <div className="flex-1 ml-6">
-    <div className="flex gap-1 font-semibold border-b border-gray-300">
+    <div className="flex gap-1 font-semibold">
         {tabs.map((tab, index) => (
           <button
             key={tab.id}
@@ -201,6 +213,8 @@ return (
             }
           >
             {index === 0 && activeTab === 'top'}
+            <FontAwesomeIcon icon={tab.icon} />
+            <br/>
             {tab.label}
           </button>
         ))}
