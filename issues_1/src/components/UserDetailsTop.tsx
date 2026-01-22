@@ -2,9 +2,7 @@
 
 import { useState } from 'react';
 
-export function UserDetailsTop() {
-
-}
+export function UserDetailsTop() {}
 
 // return (
 //     {/* ================= main ================= */}

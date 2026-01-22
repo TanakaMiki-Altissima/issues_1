@@ -23,47 +23,41 @@ export type TimelineItem =
   | (BaseTimelineItem & { type: 'reservation' })
   | (BaseTimelineItem & { type: 'consideration' });
 
-const parseDate = (date: string) =>
-  new Date(date.replace(/\./g, '-'));
+const parseDate = (date: string) => new Date(date.replace(/\./g, '-'));
 
 /* =====================
    各タイムライン変換
 ===================== */
 
-export const purchaseTimeline: TimelineItem[] =
-  mockPurchases.map((p, index) => ({
-    id: `purchase-${index}`,
-    type: 'purchase' as const,
-    ...p,
-  }));
+export const purchaseTimeline: TimelineItem[] = mockPurchases.map((p, index) => ({
+  id: `purchase-${index}`,
+  type: 'purchase' as const,
+  ...p,
+}));
 
-export const inspectionTimeline: TimelineItem[] =
-  mockInspections.map((i, index) => ({
-    id: `inspection-${index}`,
-    type: 'inspection' as const,
-    ...i,
-  }));
+export const inspectionTimeline: TimelineItem[] = mockInspections.map((i, index) => ({
+  id: `inspection-${index}`,
+  type: 'inspection' as const,
+  ...i,
+}));
 
-export const workTimeline: TimelineItem[] =
-  mockWorks.map((w, index) => ({
-    id: `work-${index}`,
-    type: 'work' as const,
-    ...w,
-  }));
+export const workTimeline: TimelineItem[] = mockWorks.map((w, index) => ({
+  id: `work-${index}`,
+  type: 'work' as const,
+  ...w,
+}));
 
-export const reservationTimeline: TimelineItem[] =
-  mockReservations.map((r, index) => ({
-    id: `reservation-${index}`,
-    type: 'reservation' as const,
-    ...r,
-  }));
+export const reservationTimeline: TimelineItem[] = mockReservations.map((r, index) => ({
+  id: `reservation-${index}`,
+  type: 'reservation' as const,
+  ...r,
+}));
 
-export const considerationTimeline: TimelineItem[] =
-  mockConsideration.map((c, index) => ({
-    id: `consideration-${index}`,
-    type: 'consideration' as const,
-    ...c,
-  }));
+export const considerationTimeline: TimelineItem[] = mockConsideration.map((c, index) => ({
+  id: `consideration-${index}`,
+  type: 'consideration' as const,
+  ...c,
+}));
 
 export const mockTimeline: TimelineItem[] = [
   ...purchaseTimeline,
@@ -71,8 +65,4 @@ export const mockTimeline: TimelineItem[] = [
   ...workTimeline,
   ...reservationTimeline,
   ...considerationTimeline,
-].sort(
-  (a, b) =>
-    parseDate(b.date).getTime() -
-    parseDate(a.date).getTime()
-);
+].sort((a, b) => parseDate(b.date).getTime() - parseDate(a.date).getTime());

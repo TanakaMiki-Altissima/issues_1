@@ -1,4 +1,3 @@
-
 // import React from 'react';
 
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -33,30 +32,29 @@ describe('UserSearchPage', () => {
   });
 
   test('サイドバーの「入庫」に hover すると OpenSidebar が表示される', async () => {
-  const user = userEvent.setup();
+    const user = userEvent.setup();
 
-  render(<UserSearchPage />);
+    render(<UserSearchPage />);
 
-  const stockMenu = screen.getByText('入庫');
-  await user.hover(stockMenu);
+    const stockMenu = screen.getByText('入庫');
+    await user.hover(stockMenu);
 
-  expect(screen.getAllByText('入庫サブメニュー').length).toBeGreaterThan(0);
-});
+    expect(screen.getAllByText('入庫サブメニュー').length).toBeGreaterThan(0);
+  });
 
   test('サイドバーの「顧客情報」に hover すると OpenSidebar が表示される', async () => {
-  const user = userEvent.setup();
+    const user = userEvent.setup();
 
-  render(<UserSearchPage />);
+    render(<UserSearchPage />);
 
-  const customerMenu = screen.getByText('顧客情報');
-  await user.hover(customerMenu);
+    const customerMenu = screen.getByText('顧客情報');
+    await user.hover(customerMenu);
 
-  expect(screen.getByText('新規顧客情報')).toBeInTheDocument();
-  expect(screen.getByText('Croooober ID検索')).toBeInTheDocument();
-});
+    expect(screen.getByText('新規顧客情報')).toBeInTheDocument();
+    expect(screen.getByText('Croooober ID検索')).toBeInTheDocument();
+  });
 
-//   test('顧客を選択すると決定ボタンが有効になる', () => {
-//   expect(true).toBe(true);
-// });
-
+  //   test('顧客を選択すると決定ボタンが有効になる', () => {
+  //   expect(true).toBe(true);
+  // });
 });

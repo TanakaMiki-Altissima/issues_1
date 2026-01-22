@@ -11,11 +11,11 @@ export type Inspections = {
 
 export const mockInspections: Inspections[] = [
   {
-  date: '2022.9.26',
-  car_name: 'インプレッサスポーツ',
-  title: 'GOODYEAR EAGLE REVSPEC RS-02 205/55R16 3',
-  price: '13,138',
-  store_name: 't店舗1(検証用直営1)',
-  comment: ''
+    date: '2022.9.26',
+    car_name: 'インプレッサスポーツ',
+    title: 'GOODYEAR EAGLE REVSPEC RS-02 205/55R16 3',
+    price: '13,138',
+    store_name: 't店舗1(検証用直営1)',
+    comment: '',
   },
 ];

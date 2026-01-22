@@ -33,10 +33,7 @@ export function Sidebar() {
         className="w-[49px] border-r border-gray-300 flex flex-col items-center"
         onMouseLeave={() => setHoveredMenu(null)}
       >
-        <button
-          onClick={handleToggleClick}
-          className="my-2 text-[18px] text-blue-700 cursor-pointer"
-        >
+        <button onClick={handleToggleClick} className="my-2 text-[18px] text-blue-700 cursor-pointer">
           ＞
         </button>
 
@@ -62,19 +59,11 @@ export function Sidebar() {
 
 /* ================= Menu Button ================= */
 
-function MenuButton({
-  title,
-  onHover,
-}: {
-  title: string;
-  onHover: () => void;
-}) {
+function MenuButton({ title, onHover }: { title: string; onHover: () => void }) {
   return (
     <div onMouseEnter={onHover} className="flex flex-col items-center cursor-pointer">
       <div className="w-[49px] h-[49px] flex items-center justify-center border border-gray-300">
-        <h3 className="text-sm text-center leading-tight p-2">
-          {title}
-        </h3>
+        <h3 className="text-sm text-center leading-tight p-2">{title}</h3>
       </div>
     </div>
   );

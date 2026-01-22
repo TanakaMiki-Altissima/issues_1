@@ -10,11 +10,11 @@ export type Works = {
 
 export const mockWorks: Works[] = [
   {
-  date: '2022.9.10',
-  car_name: 'インプレッサスポーツ',
-  title: 'TITLE',
-  price: '2,222',
-  store_name: 't店舗1(検証用直営1)',
-  comment: ''
+    date: '2022.9.10',
+    car_name: 'インプレッサスポーツ',
+    title: 'TITLE',
+    price: '2,222',
+    store_name: 't店舗1(検証用直営1)',
+    comment: '',
   },
 ];

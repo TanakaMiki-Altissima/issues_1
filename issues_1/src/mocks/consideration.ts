@@ -11,11 +11,11 @@ export type Consideration = {
 
 export const mockConsideration: Consideration[] = [
   {
-  date: '2022.9.21',
-  car_name: 'インプレッサスポーツ',
-  title: 'TITLE',
-  price: '2,222',
-  store_name: 't店舗1(検証用直営1)',
-  comment: ''
+    date: '2022.9.21',
+    car_name: 'インプレッサスポーツ',
+    title: 'TITLE',
+    price: '2,222',
+    store_name: 't店舗1(検証用直営1)',
+    comment: '',
   },
 ];
