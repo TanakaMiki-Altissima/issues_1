@@ -48,7 +48,7 @@ export default function UserDetailsPage() {
 
   const getTabStyles = (tab: (typeof tabs)[0]) => {
     const isActive = activeTab === tab.id;
-    const baseStyles = 'w-60 px-6 py-4 transition-colors';
+    const baseStyles = 'w-20 px-6 py-4 transition-colors';
 
     if (isActive) {
       return `${baseStyles} bg-${tab.color}-300 text-${tab.color}-900`;
@@ -133,12 +133,10 @@ export default function UserDetailsPage() {
       <div className="flex flex-1">
         <Sidebar />
         <main className="flex flex-1">
-          <div className="flex flex-1">
             <UserDetailsSide />
-          </ div>
 
           {/* ===== 右カラム ===== */}
-          <div className="flex-1 ml-6">
+          <div className="flex-1 ml-6 min-w-0 overflow-x-hidden">
             <div className="flex gap-1 font-semibold">
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.id;
@@ -148,7 +146,7 @@ export default function UserDetailsPage() {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`
-        w-60 px-6 py-4
+        flex-1 px-4 py-1
         ${isActive ? 'bg-white text-' + tab.color + '-700' : 'bg-' + tab.color + '-100'}
         relative
       `}
@@ -269,7 +267,7 @@ export default function UserDetailsPage() {
               {/* タブ別コンテンツ */}
               {activeTab === 'top' && (
                 <div className="p-4">
-                  
+
 
                   <div className="space-y-3">
                     {paginatedTimeline.map((item) => (
