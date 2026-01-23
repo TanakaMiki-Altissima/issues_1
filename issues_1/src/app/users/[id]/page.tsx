@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { UserDetailsSide } from '@/components/layout/UserDetails_side';
+import { UserDetailsSide } from '@/components/layout/UserDetailsSide';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faHouse, faComment, faStar, faWrench, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faChartBar } from '@fortawesome/free-regular-svg-icons';
@@ -173,8 +173,12 @@ export default function UserDetailsPage() {
 
             {/* タブコンテンツ */}
             <div className="mt-6">
-              {/* 共通検索エリア */}
+
+              <div className="flex items-center p-4 border-b-2 border-gray-300">
+                <h2 className="text-xl font-semibold mb-6">取引履歴</h2>
+              </div>
               <div className="flex items-center p-4 border-b border-gray-300">
+                
                 {/* ===== 左：キーワード検索 ===== */}
                 <div className="flex items-center gap-4">
                   <div className="relative">
@@ -265,7 +269,7 @@ export default function UserDetailsPage() {
               {/* タブ別コンテンツ */}
               {activeTab === 'top' && (
                 <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-6">取引履歴</h2>
+                  
 
                   <div className="space-y-3">
                     {paginatedTimeline.map((item) => (
