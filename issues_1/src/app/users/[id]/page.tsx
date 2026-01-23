@@ -1,31 +1,22 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { useParams } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { UserDetailsSide } from '@/components/layout/UserDetails_side';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faHouse, faComment, faStar, faWrench, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faChartBar } from '@fortawesome/free-regular-svg-icons';
-import { useParams } from 'next/navigation';
-import { mockCustomers } from '@/mocks/customers';
-import { mockCustomer_cars } from '@/mocks/customer_cars';
+
 import { mockTimeline } from '@/mocks/timeline';
 
 export default function UserDetailsPage() {
-  const params = useParams<{ id: string }>();
-  const customerId = params.id;
-
-  const customer = mockCustomers.find((c) => c.crooooberId === customerId);
-
-  if (!customer) {
-    return <p>顧客が見つかりません</p>;
-  }
-
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [editedName, setEditedName] = useState(customer.name);
+  
   const [activeTab, setActiveTab] = useState('top');
 
-  const customerCars = mockCustomer_cars.filter((car) => car.ownerId === customerId);
+  const params = useParams<{ id: string }>();
+  const customerId = params.id;
 
   const [inputKeyword, setInputKeyword] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -43,13 +34,6 @@ export default function UserDetailsPage() {
   };
 
   const septemberDays = Array.from({ length: 30 }, (_, i) => i + 1);
-
-  const isWithinOneMonth = (inspectionDate: Date) => {
-    const today = new Date();
-    const diffTime = inspectionDate.getTime() - today.getTime();
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-    return diffDays <= 30 && diffDays >= 0;
-  };
 
   const tabs = [
     { id: 'top', label: 'トップ', color: 'blue', icon: faHouse },
@@ -91,6 +75,8 @@ export default function UserDetailsPage() {
   const filteredTimeline = useMemo(() => {
     let list = mockTimeline;
 
+    list = list.filter((item) => item.ownerId === customerId);
+
     // 「メモ付きのみ」にチェックが入っている場合
     if (onlyWithComment) {
       list = list.filter((item) => 'comment' in item && item.comment);
@@ -120,7 +106,7 @@ export default function UserDetailsPage() {
     }
 
     return list;
-  }, [mockTimeline, activeTab, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName]);
+  }, [customerId, mockTimeline, activeTab, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName]);
 
   const carNameOptions = useMemo(() => {
     return Array.from(
@@ -147,110 +133,9 @@ export default function UserDetailsPage() {
       <div className="flex flex-1">
         <Sidebar />
         <main className="flex flex-1">
-          <div className="h-full border-r border-gray-300">
-            {/* 氏名・愛車・ボタン */}
-            <div className="w-[300px] h-full border-r border-gray-300">
-              <div className="space-y-1 pt-4 mb-6 bg-blue-100 h-[130px] text-center">
-                <div className="inline-block transform italic">
-                  <strong>Croooober ID</strong>
-                </div>
-                <br />
-                <strong>{customer.crooooberId}</strong>
-                <div className="text-center">
-                  {isEditingName ? (
-                    <input
-                      value={editedName}
-                      onChange={(e) => setEditedName(e.target.value)}
-                      onBlur={() => setIsEditingName(false)}
-                      className="border border-gray-300 rounded px-2 py-1 text-center"
-                      autoFocus
-                    />
-                  ) : (
-                    <>
-                      <p>
-                        <strong>{editedName}</strong>さま
-                      </p>
-                      <button onClick={() => setIsEditingName(true)} className="text-blue-600 text-sm hover:underline">
-                        編集
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <div className="p-4 border-b border-gray-300">
-                <h3 className="text-xl font-semibold mb-4">愛車一覧</h3>
-
-                {customerCars.length === 0 ? (
-                  <p>登録されている車はありません</p>
-                ) : (
-                  <div className="space-y-4">
-                    {customerCars.map((car) => (
-                      <div key={car.id} className="flex items-center gap-4 ">
-                        {/* ===== 画像を左 ===== */}
-                        {car.image && (
-                          <img src={`/${car.image}`} alt={car.car_name} className="w-15 h-15 object-contain" />
-                        )}
-
-                        {/* ===== テキストを右 ===== */}
-                        <div>
-                          <p className="text-sm text-gray-500">{car.manufacturer}</p>
-                          <h4 className="text-lg font-medium">{car.car_name}</h4>
-                          {isWithinOneMonth(new Date(car.vehicle_inspection)) && (
-                            <p className="text-blue-600 text-sm font-medium">車検まであと1ヶ月です</p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-6 flex flex-col items-center gap-5">
-                <button
-                  className="
-                    w-60
-                    px-6 py-2
-                    rounded
-                    bg-white
-                    text-blue-700
-                    border border-blue-700
-                    hover:bg-blue-50
-                  "
-                >
-                  新規見積もり
-                </button>
-
-                <button
-                  className="
-                    w-60
-                    px-6 py-2
-                    rounded
-                    bg-white
-                    text-blue-700
-                    border border-blue-700
-                    hover:bg-blue-50
-                  "
-                >
-                  新規買取査定
-                </button>
-
-                <button
-                  className="
-                    w-60
-                    px-6 py-2
-                    rounded
-                    bg-white
-                    text-blue-700
-                    border border-blue-700
-                    hover:bg-blue-50
-                  "
-                >
-                  新規作業予約
-                </button>
-              </div>
-            </div>
-          </div>
+          <div className="flex flex-1">
+            <UserDetailsSide />
+          </ div>
 
           {/* ===== 右カラム ===== */}
           <div className="flex-1 ml-6">
@@ -364,6 +249,7 @@ export default function UserDetailsPage() {
               <div className="flex items-center gap-6 p-4 border-b border-gray-300">
                 <p className="text-sm text-gray-700">{filteredTimeline.length} 件</p>
 
+              <div className="flex items-center gap-6 ml-auto">
                 <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
                   <input
                     type="checkbox"
@@ -373,6 +259,7 @@ export default function UserDetailsPage() {
                   />
                   メモ付きのみ
                 </label>
+                </div>
               </div>
 
               {/* タブ別コンテンツ */}
@@ -412,9 +299,9 @@ export default function UserDetailsPage() {
                           {item.type === 'purchase' && (
                             <span className="bg-yellow-100 text-sm font-medium">購入履歴</span>
                           )}
-                          {item.type === 'work' && <span className="bg-green-100 text-sm font-medium">作業履歴</span>}
+                          {item.type === 'work' && <span className="bg-gray-100 text-sm font-medium">作業履歴</span>}
                           {item.type === 'inspection' && (
-                            <span className="bg-green-100 text-sm font-medium">査定中</span>
+                            <span className="bg-green-100 text-sm font-medium">査定履歴</span>
                           )}
                           {item.type === 'reservation' && (
                             <span className="bg-gray-100 text-sm font-medium">作業予約</span>

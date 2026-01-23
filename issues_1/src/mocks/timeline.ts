@@ -8,6 +8,7 @@ import { mockConsideration } from './consideration';
 // 共通フィールド
 type BaseTimelineItem = {
   id: string;
+  ownerId: string;
   date: string;
   car_name: string;
   title: string;

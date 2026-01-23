@@ -1,5 +1,6 @@
 // 購入履歴
 export type Purchases = {
+  ownerId: string;
   date: string;
   car_name: string;
   title: string;
@@ -10,6 +11,7 @@ export type Purchases = {
 
 export const mockPurchases: Purchases[] = [
   {
+    ownerId: '12345678901234',
     date: '2022.9.26',
     car_name: 'インプレッサスポーツ',
     title: 'GOODYEAR EAGLE REVSPEC RS-02 205/55R16',
@@ -17,7 +19,17 @@ export const mockPurchases: Purchases[] = [
     store_name: 't店舗1(検証用直営1)',
     comment: 'コメント',
   },
+   {
+    ownerId: '12345678901234',
+    date: '2022.9.10',
+    car_name: 'インプレッサスポーツ',
+    title: 'GOODYEAR EAGLE REVSPEC RS-02 205/55R16',
+    price: '13,111',
+    store_name: 't店舗1(検証用直営1)',
+    comment: '',
+  },
   {
+    ownerId: '32323343022332',
     date: '2022.9.9',
     car_name: '',
     title: 'GOODYEAR EAGLE REVSPEC RS-02 205/55R16 2',
@@ -26,6 +38,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
   },
   {
+    ownerId: '12345678901234',
     date: '2022.9.9',
     car_name: 'インプレッサスポーツ',
     title: 'GOODYEAR EAGLE REVSPEC RS-02 205/55R16 4',
@@ -34,6 +47,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
   },
   {
+    ownerId: '12345678901234',
     date: '2022.9.26',
     car_name: 'インプレッサスポーツ',
     title: 'GOODYEAR EAGLE REVSPEC RS-02 205/55R16 5',

@@ -1,6 +1,7 @@
 // 査定中
 
 export type Inspections = {
+  ownerId: string;
   date: string;
   car_name: string;
   title: string;
@@ -11,6 +12,7 @@ export type Inspections = {
 
 export const mockInspections: Inspections[] = [
   {
+    ownerId: '12345678901234',
     date: '2022.9.26',
     car_name: 'インプレッサスポーツ',
     title: 'GOODYEAR EAGLE REVSPEC RS-02 205/55R16 3',
