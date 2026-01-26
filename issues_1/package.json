@@ -10,7 +10,8 @@
     "test": "jest",
     "coverage": "jest --coverage",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "prettier-format": "prettier --write ."
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
