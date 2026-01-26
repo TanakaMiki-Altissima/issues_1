@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faHouse, faComment, faStar, faWrench, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faChartBar } from '@fortawesome/free-regular-svg-icons';
 
+import { PurchaseHistoryTab } from '@/components/tabs/PurchaseHistoryTab';
+
 import { mockTimeline } from '@/mocks/timeline';
 
 export default function UserDetailsPage() {
@@ -122,6 +124,12 @@ export default function UserDetailsPage() {
     const start = (currentPage - 1) * itemsPerPage;
     return filteredTimeline.slice(start, start + itemsPerPage);
   }, [filteredTimeline, currentPage, itemsPerPage]);
+
+  const purchaseTimeline = useMemo(() => {
+  return filteredTimeline.filter(
+    (item) => item.type === 'purchase'
+  );
+}, [filteredTimeline]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -350,10 +358,7 @@ export default function UserDetailsPage() {
               )}
 
               {activeTab === 'purchase' && (
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-4">購入履歴</h2>
-                  <p>購入履歴内容</p>
-                </div>
+                <PurchaseHistoryTab items={purchaseTimeline} />
               )}
 
               {activeTab === 'assessment' && (
