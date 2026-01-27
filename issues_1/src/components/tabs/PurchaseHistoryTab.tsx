@@ -2,12 +2,29 @@
 import { TimelineItem } from '@/mocks/timeline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
+import { useState, useMemo } from 'react';
+import { Pagination } from '@/components/layout/Pagination';
+import Link from 'next/link';
 
 type Props = {
   items: Extract<TimelineItem, { type: 'purchase' }>[];
+  itemsPerPage?: number;
 };
 
-export function PurchaseHistoryTab({ items }: Props) {
+export function PurchaseHistoryTab({ items, itemsPerPage = 5 }: Props) {
+const [currentPage, setCurrentPage] = useState(1);
+
+  // 総ページ数を計算
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(items.length / itemsPerPage));
+  }, [items.length, itemsPerPage]);
+
+  // 現在のページに表示するアイテムを計算
+  const paginatedItems = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return items.slice(start, start + itemsPerPage);
+  }, [items, currentPage, itemsPerPage]);
+
   if (items.length === 0) {
     return (
       <div className="p-4">
@@ -60,13 +77,25 @@ export function PurchaseHistoryTab({ items }: Props) {
               <p className="text-gray-500">¥{item.price}</p>
 
               {/* 店舗名 + ＞ */}
-              <div className="flex items-center gap-6 text-sm text-gray-500">
-                <span>{item.store_name}</span>
-                <span className="text-gray-400">＞</span>
-              </div>
+<div className="flex items-center gap-6 text-sm text-gray-500">
+  <span>{item.store_name}</span>
+
+  <Link
+    href={`/purchase/${item.id}`}
+    className="text-gray-400 hover:text-gray-600"
+  >
+    ＞
+  </Link>
+</div>
+
             </div>
           </div>
         ))}
+        <Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  onPageChange={setCurrentPage}
+/>
       </div>
     </div>
   );

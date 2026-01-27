@@ -8,9 +8,8 @@ import { UserDetailsSide } from '@/components/layout/UserDetailsSide';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faHouse, faComment, faStar, faWrench, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faChartBar } from '@fortawesome/free-regular-svg-icons';
-
+import { Pagination } from '@/components/layout/Pagination';
 import { PurchaseHistoryTab } from '@/components/tabs/PurchaseHistoryTab';
-
 import { mockTimeline } from '@/mocks/timeline';
 
 export default function UserDetailsPage() {
@@ -116,9 +115,7 @@ export default function UserDetailsPage() {
     );
   }, [mockTimeline]);
 
-  const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(filteredTimeline.length / itemsPerPage));
-  }, [filteredTimeline.length, itemsPerPage]);
+  
 
   const paginatedTimeline = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
@@ -134,6 +131,10 @@ export default function UserDetailsPage() {
   useEffect(() => {
     setCurrentPage(1);
   }, [activeTab]);
+
+  const totalPages = useMemo(() => {
+  return Math.max(1, Math.ceil(filteredTimeline.length / itemsPerPage));
+}, [filteredTimeline.length, itemsPerPage]);
 
   return (
     <div className="h-screen flex flex-col">
@@ -389,50 +390,11 @@ export default function UserDetailsPage() {
                 </div>
               )}
             </div>
-
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-4 mt-6">
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === 1
-                      ? 'border border-gray-300 text-gray-400 cursor-not-allowed'
-                      : 'border border-gray-300 hover:bg-gray-200'
-                  }`}
-                >
-                  前へ
-                </button>
-
-                {/* ページ番号（全文字表示） */}
-                <div className="flex items-center gap-2">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => setCurrentPage(p)}
-                      className={`px-3 py-1 rounded ${
-                        currentPage === p
-                          ? 'bg-black text-white'
-                          : 'bg-transparent text-gray-700 border border-gray-300 hover:bg-gray-100'
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === totalPages
-                      ? 'border border-gray-300 text-gray-400 cursor-not-allowed'
-                      : 'border border-gray-300 hover:bg-gray-200'
-                  }`}
-                >
-                  次へ
-                </button>
-              </div>
-            )}
+            <Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  onPageChange={setCurrentPage}
+/>
           </div>
         </main>
       </div>
