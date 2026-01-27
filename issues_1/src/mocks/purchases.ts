@@ -1,5 +1,6 @@
 // 購入履歴
 export type Purchases = {
+  id: string;
   ownerId: string;
   date: string;
   car_name: string;
@@ -9,10 +10,12 @@ export type Purchases = {
   comment: string;
   name: string;
   url: string;
+  image?: string;
 };
 
 export const mockPurchases: Purchases[] = [
   {
+    id: 'purchase-001',
     ownerId: '12345678901234',
     date: '2022.9.26',
     car_name: 'インプレッサスポーツ',
@@ -22,8 +25,10 @@ export const mockPurchases: Purchases[] = [
     comment: 'コメント',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-002',
     ownerId: '12345678901234',
     date: '2022.9.10',
     car_name: 'インプレッサスポーツ',
@@ -33,8 +38,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
   {
+    id: 'purchase-003',
     ownerId: '32323343022332',
     date: '2022.9.9',
     car_name: '',
@@ -44,8 +51,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
   {
+    id: 'purchase-004',
     ownerId: '12345678901234',
     date: '2022.9.9',
     car_name: 'インプレッサスポーツ',
@@ -55,8 +64,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
   {
+    id: 'purchase-005',
     ownerId: '12345678901234',
     date: '2022.9.26',
     car_name: 'インプレッサスポーツ',
@@ -66,8 +77,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-006',
     ownerId: '32323343022332',
     date: '2022.12.13',
     car_name: 'WRXSTI',
@@ -77,8 +90,10 @@ export const mockPurchases: Purchases[] = [
     comment: 'メモ',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-007',
     ownerId: '32323343022332',
     date: '2022.11.17',
     car_name: '',
@@ -88,8 +103,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-008',
     ownerId: '32323343022332',
     date: '2022.11.16',
     car_name: '',
@@ -99,8 +116,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-008',
     ownerId: '32323343022332',
     date: '2022.10.25',
     car_name: '',
@@ -110,8 +129,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-009',
     ownerId: '32323343022332',
     date: '2022.10.25',
     car_name: '',
@@ -121,8 +142,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-010',
     ownerId: '32323343022332',
     date: '2022.10.25',
     car_name: '',
@@ -132,8 +155,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-011',
     ownerId: '32323343022332',
     date: '2022.10.25',
     car_name: '',
@@ -143,8 +168,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-012',
     ownerId: '32323343022332',
     date: '2022.10.01',
     car_name: '',
@@ -154,8 +181,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-013',
     ownerId: '32323343022332',
     date: '2022.10.01',
     car_name: '',
@@ -165,8 +194,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-014',
     ownerId: '32323343022332',
     date: '2022.10.01',
     car_name: '',
@@ -176,8 +207,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-015',
     ownerId: '32323343022332',
     date: '2022.10.01',
     car_name: '',
@@ -187,8 +220,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-016',
     ownerId: '32323343022332',
     date: '2022.10.01',
     car_name: '',
@@ -198,8 +233,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-017',
     ownerId: '32323343022332',
     date: '2022.10.01',
     car_name: '',
@@ -209,8 +246,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-018',
     ownerId: '32323343022332',
     date: '2022.10.01',
     car_name: '',
@@ -220,8 +259,10 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
-   {
+  {
+    id: 'purchase-019',
     ownerId: '32323343022332',
     date: '2022.10.01',
     car_name: '',
@@ -231,5 +272,6 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    image: 'car_white.png',
   },
 ];

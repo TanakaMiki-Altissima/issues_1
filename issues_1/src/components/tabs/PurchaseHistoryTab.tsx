@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function PurchaseHistoryTab({ items, itemsPerPage = 5 }: Props) {
-const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // 総ページ数を計算
   const totalPages = useMemo(() => {
@@ -41,13 +41,10 @@ const [currentPage, setCurrentPage] = useState(1);
             {/* ===== 左:画像 ===== */}
             <div className="relative w-14 h-14 flex-shrink-0">
               <img src="/car_white.png" alt="gazou" className="w-full h-full object-contain bg-blue-100" />
-              
+
               {/* コメントありアイコン */}
               {item.comment && (
-                <FontAwesomeIcon
-                  icon={faMessage}
-                  className="absolute -top-4 -right-4 text-orange-400 fa-2x"
-                />
+                <FontAwesomeIcon icon={faMessage} className="absolute -top-4 -right-4 text-orange-400 fa-2x" />
               )}
             </div>
 
@@ -77,25 +74,17 @@ const [currentPage, setCurrentPage] = useState(1);
               <p className="text-gray-500">¥{item.price}</p>
 
               {/* 店舗名 + ＞ */}
-<div className="flex items-center gap-6 text-sm text-gray-500">
-  <span>{item.store_name}</span>
+              <div className="flex items-center gap-6 text-sm text-gray-500">
+                <span>{item.store_name}</span>
 
-  <Link
-    href={`/purchase/${item.id}`}
-    className="text-gray-400 hover:text-gray-600"
-  >
-    ＞
-  </Link>
-</div>
-
+                <Link href={`/purchase/${item.id}`} className="text-gray-400 hover:text-gray-600">
+                  ＞
+                </Link>
+              </div>
             </div>
           </div>
         ))}
-        <Pagination
-  currentPage={currentPage}
-  totalPages={totalPages}
-  onPageChange={setCurrentPage}
-/>
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       </div>
     </div>
   );

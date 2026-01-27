@@ -13,7 +13,6 @@ import { PurchaseHistoryTab } from '@/components/tabs/PurchaseHistoryTab';
 import { mockTimeline } from '@/mocks/timeline';
 
 export default function UserDetailsPage() {
-  
   const [activeTab, setActiveTab] = useState('top');
 
   const params = useParams<{ id: string }>();
@@ -115,26 +114,22 @@ export default function UserDetailsPage() {
     );
   }, [mockTimeline]);
 
-  
-
   const paginatedTimeline = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return filteredTimeline.slice(start, start + itemsPerPage);
   }, [filteredTimeline, currentPage, itemsPerPage]);
 
   const purchaseTimeline = useMemo(() => {
-  return filteredTimeline.filter(
-    (item) => item.type === 'purchase'
-  );
-}, [filteredTimeline]);
+    return filteredTimeline.filter((item) => item.type === 'purchase');
+  }, [filteredTimeline]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [activeTab]);
 
   const totalPages = useMemo(() => {
-  return Math.max(1, Math.ceil(filteredTimeline.length / itemsPerPage));
-}, [filteredTimeline.length, itemsPerPage]);
+    return Math.max(1, Math.ceil(filteredTimeline.length / itemsPerPage));
+  }, [filteredTimeline.length, itemsPerPage]);
 
   return (
     <div className="h-screen flex flex-col">
@@ -142,7 +137,7 @@ export default function UserDetailsPage() {
       <div className="flex flex-1">
         <Sidebar />
         <main className="flex flex-1">
-            <UserDetailsSide />
+          <UserDetailsSide customerId={customerId} />
 
           {/* ===== 右カラム ===== */}
           <div className="flex-1 ml-6 min-w-0 overflow-x-hidden">
@@ -180,12 +175,10 @@ export default function UserDetailsPage() {
 
             {/* タブコンテンツ */}
             <div className="mt-6">
-
               <div className="flex items-center p-4 border-b-2 border-gray-300">
                 <h2 className="text-xl font-semibold mb-6">取引履歴</h2>
               </div>
               <div className="flex items-center p-4 border-b border-gray-300">
-                
                 {/* ===== 左：キーワード検索 ===== */}
                 <div className="flex items-center gap-4">
                   <div className="relative">
@@ -260,24 +253,22 @@ export default function UserDetailsPage() {
               <div className="flex items-center gap-6 p-4 border-b border-gray-300">
                 <p className="text-sm text-gray-700">{filteredTimeline.length} 件</p>
 
-              <div className="flex items-center gap-6 ml-auto">
-                <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={onlyWithComment}
-                    onChange={(e) => setOnlyWithComment(e.target.checked)}
-                    className="w-4 h-4"
-                  />
-                  メモ付きのみ
-                </label>
+                <div className="flex items-center gap-6 ml-auto">
+                  <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={onlyWithComment}
+                      onChange={(e) => setOnlyWithComment(e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                    メモ付きのみ
+                  </label>
                 </div>
               </div>
 
               {/* タブ別コンテンツ */}
               {activeTab === 'top' && (
                 <div className="p-4">
-
-
                   <div className="space-y-3">
                     {paginatedTimeline.map((item) => (
                       <div key={item.id} className="flex items-center gap-4 py-3 border-b border-gray-300">
@@ -358,9 +349,7 @@ export default function UserDetailsPage() {
                 </div>
               )}
 
-              {activeTab === 'purchase' && (
-                <PurchaseHistoryTab items={purchaseTimeline} />
-              )}
+              {activeTab === 'purchase' && <PurchaseHistoryTab items={purchaseTimeline} />}
 
               {activeTab === 'assessment' && (
                 <div className="p-4">
@@ -390,11 +379,7 @@ export default function UserDetailsPage() {
                 </div>
               )}
             </div>
-            <Pagination
-  currentPage={currentPage}
-  totalPages={totalPages}
-  onPageChange={setCurrentPage}
-/>
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
           </div>
         </main>
       </div>
