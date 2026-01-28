@@ -1,4 +1,12 @@
 // 購入履歴
+export type PurchaseComment = {
+  id: string;
+  datetime: string;
+  storeName: string;
+  staffName: string;
+  body: string;
+};
+
 export type Purchases = {
   id: string;
   ownerId: string;
@@ -7,9 +15,10 @@ export type Purchases = {
   title: string;
   price: string;
   store_name: string;
-  comment: string;
+  comments?: PurchaseComment[];
   name: string;
   url: string;
+  memo: string;
   image?: string;
 };
 
@@ -22,9 +31,18 @@ export const mockPurchases: Purchases[] = [
     title: 'GOODYEAR EAGLE REVSPEC RS-02 205/55R16',
     price: '13,138',
     store_name: 't店舗1(検証用直営1)',
-    comment: 'コメント',
+    comments: [
+      {
+        id: 'c-001',
+        datetime: '2022-09-26 10:30',
+        storeName: 't店舗1(検証用直営1)',
+        staffName: '田中',
+        body: '取付完了しました',
+      },
+    ],
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -38,6 +56,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -51,6 +70,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -64,6 +84,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -77,6 +98,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -90,6 +112,7 @@ export const mockPurchases: Purchases[] = [
     comment: 'メモ',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -103,6 +126,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -116,6 +140,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -129,6 +154,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -142,6 +168,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -155,6 +182,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -168,6 +196,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -181,6 +210,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -194,6 +224,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -207,6 +238,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -220,6 +252,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -233,6 +266,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -246,6 +280,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -259,6 +294,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
   {
@@ -272,6 +308,7 @@ export const mockPurchases: Purchases[] = [
     comment: '',
     name: 'item',
     url: 'https://example.com',
+    memo: 'メモ',
     image: 'car_white.png',
   },
 ];
