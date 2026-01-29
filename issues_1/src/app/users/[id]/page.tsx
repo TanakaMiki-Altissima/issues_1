@@ -5,14 +5,19 @@ import { useParams } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { UserDetailsSide } from '@/components/layout/UserDetailsSide';
+import { TimelineFilterBar } from '@/components/FilterBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass, faHouse, faComment, faStar, faWrench, faMessage } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faComment, faStar, faWrench, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faChartBar } from '@fortawesome/free-regular-svg-icons';
-
+import { Pagination } from '@/components/layout/Pagination';
+import { PurchaseHistoryTab } from '@/components/tabs/PurchaseHistoryTab';
 import { mockTimeline } from '@/mocks/timeline';
 
+function hasComments(item: unknown): item is { comments: { id: string }[] } {
+  return typeof item === 'object' && item !== null && 'comments' in item && Array.isArray((item as any).comments);
+}
+
 export default function UserDetailsPage() {
-  
   const [activeTab, setActiveTab] = useState('top');
 
   const params = useParams<{ id: string }>();
@@ -79,7 +84,7 @@ export default function UserDetailsPage() {
 
     // 「メモ付きのみ」にチェックが入っている場合
     if (onlyWithComment) {
-      list = list.filter((item) => 'comment' in item && item.comment);
+      list = list.filter((item) => 'comments' in item && Array.isArray(item.comments) && item.comments.length > 0);
     }
 
     if (searchKeyword.trim() !== '') {
@@ -114,18 +119,22 @@ export default function UserDetailsPage() {
     );
   }, [mockTimeline]);
 
-  const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(filteredTimeline.length / itemsPerPage));
-  }, [filteredTimeline.length, itemsPerPage]);
-
   const paginatedTimeline = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return filteredTimeline.slice(start, start + itemsPerPage);
   }, [filteredTimeline, currentPage, itemsPerPage]);
 
+  const purchaseTimeline = useMemo(() => {
+    return filteredTimeline.filter((item) => item.type === 'purchase');
+  }, [filteredTimeline]);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [activeTab]);
+
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(filteredTimeline.length / itemsPerPage));
+  }, [filteredTimeline.length, itemsPerPage]);
 
   return (
     <div className="h-screen flex flex-col">
@@ -133,7 +142,7 @@ export default function UserDetailsPage() {
       <div className="flex flex-1">
         <Sidebar />
         <main className="flex flex-1">
-            <UserDetailsSide />
+          <UserDetailsSide customerId={customerId} />
 
           {/* ===== 右カラム ===== */}
           <div className="flex-1 ml-6 min-w-0 overflow-x-hidden">
@@ -169,106 +178,32 @@ export default function UserDetailsPage() {
               })}
             </div>
 
-            {/* タブコンテンツ */}
+            {/* タブ別コンテンツ */}
             <div className="mt-6">
-
               <div className="flex items-center p-4 border-b-2 border-gray-300">
                 <h2 className="text-xl font-semibold mb-6">取引履歴</h2>
               </div>
-              <div className="flex items-center p-4 border-b border-gray-300">
-                
-                {/* ===== 左：キーワード検索 ===== */}
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <FontAwesomeIcon
-                      icon={faMagnifyingGlass}
-                      className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
-                    />
-                    <input
-                      placeholder="キーワードで検索"
-                      value={inputKeyword}
-                      onChange={(e) => setInputKeyword(e.target.value)}
-                      className="w-[280px] pl-9 pr-2 py-2 rounded bg-gray-100 text-gray-600 outline-none"
-                    />
-                  </div>
 
-                  <button
-                    className="px-5 py-2 rounded bg-blue-700 text-white"
-                    onClick={() => setSearchKeyword(inputKeyword)}
-                  >
-                    検索
-                  </button>
-                </div>
+              {/* ===== 左：キーワード検索 ===== */}
+              <TimelineFilterBar
+                inputKeyword={inputKeyword}
+                onInputKeywordChange={setInputKeyword}
+                onSearch={() => setSearchKeyword(inputKeyword)}
+                fromDay={fromDay}
+                toDay={toDay}
+                onFromDayChange={setFromDay}
+                onToDayChange={setToDay}
+                days={septemberDays}
+                selectedCarName={selectedCarName}
+                carNameOptions={carNameOptions}
+                onCarChange={setSelectedCarName}
+                totalCount={filteredTimeline.length}
+                onlyWithComment={onlyWithComment}
+                onOnlyWithCommentChange={setOnlyWithComment}
+              />
 
-                {/* ===== 中央：日付絞り込み ===== */}
-                <div className="flex items-center gap-2 mx-auto">
-                  <select
-                    value={fromDay}
-                    onChange={(e) => setFromDay(e.target.value ? Number(e.target.value) : '')}
-                    className="w-[140px] px-3 py-2 border border-gray-300 rounded bg-white text-sm"
-                  >
-                    <option value=""></option>
-                    {septemberDays.map((day) => (
-                      <option key={day} value={day}>
-                        9月{day}日
-                      </option>
-                    ))}
-                  </select>
-
-                  <span>〜</span>
-
-                  <select
-                    value={toDay}
-                    onChange={(e) => setToDay(e.target.value ? Number(e.target.value) : '')}
-                    className="w-[140px] px-3 py-2 border border-gray-300 rounded bg-white text-sm"
-                  >
-                    <option value=""></option>
-                    {septemberDays.map((day) => (
-                      <option key={day} value={day}>
-                        9月{day}日
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* ===== 右：登録車 ===== */}
-                <div className="flex items-center gap-6 ml-auto">
-                  <select
-                    value={selectedCarName}
-                    onChange={(e) => setSelectedCarName(e.target.value)}
-                    className="w-[220px] px-3 py-2 border border-gray-300 rounded bg-white text-sm"
-                  >
-                    <option value="">登録車から絞り込む</option>
-                    {carNameOptions.map((name) => (
-                      <option key={name} value={name}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-6 p-4 border-b border-gray-300">
-                <p className="text-sm text-gray-700">{filteredTimeline.length} 件</p>
-
-              <div className="flex items-center gap-6 ml-auto">
-                <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={onlyWithComment}
-                    onChange={(e) => setOnlyWithComment(e.target.checked)}
-                    className="w-4 h-4"
-                  />
-                  メモ付きのみ
-                </label>
-                </div>
-              </div>
-
-              {/* タブ別コンテンツ */}
               {activeTab === 'top' && (
                 <div className="p-4">
-
-
                   <div className="space-y-3">
                     {paginatedTimeline.map((item) => (
                       <div key={item.id} className="flex items-center gap-4 py-3 border-b border-gray-300">
@@ -277,7 +212,7 @@ export default function UserDetailsPage() {
                           <img src="/car_white.png" alt="gazou" className="w-full h-full object-contain bg-blue-100" />
 
                           {/* コメントありアイコン */}
-                          {'comment' in item && item.comment && (
+                          {hasComments(item) && item.comments.length > 0 && (
                             <FontAwesomeIcon
                               icon={faMessage}
                               className="absolute -top-4 -right-4 text-orange-400 fa-2x"
@@ -349,12 +284,7 @@ export default function UserDetailsPage() {
                 </div>
               )}
 
-              {activeTab === 'purchase' && (
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-4">購入履歴</h2>
-                  <p>購入履歴内容</p>
-                </div>
-              )}
+              {activeTab === 'purchase' && <PurchaseHistoryTab items={purchaseTimeline} />}
 
               {activeTab === 'assessment' && (
                 <div className="p-4">
@@ -384,50 +314,7 @@ export default function UserDetailsPage() {
                 </div>
               )}
             </div>
-
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-4 mt-6">
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === 1
-                      ? 'border border-gray-300 text-gray-400 cursor-not-allowed'
-                      : 'border border-gray-300 hover:bg-gray-200'
-                  }`}
-                >
-                  前へ
-                </button>
-
-                {/* ページ番号（全文字表示） */}
-                <div className="flex items-center gap-2">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => setCurrentPage(p)}
-                      className={`px-3 py-1 rounded ${
-                        currentPage === p
-                          ? 'bg-black text-white'
-                          : 'bg-transparent text-gray-700 border border-gray-300 hover:bg-gray-100'
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === totalPages
-                      ? 'border border-gray-300 text-gray-400 cursor-not-allowed'
-                      : 'border border-gray-300 hover:bg-gray-200'
-                  }`}
-                >
-                  次へ
-                </button>
-              </div>
-            )}
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
           </div>
         </main>
       </div>
