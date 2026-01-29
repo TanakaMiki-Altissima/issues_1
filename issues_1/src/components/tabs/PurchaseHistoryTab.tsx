@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 import { useState, useMemo } from 'react';
 import { Pagination } from '@/components/layout/Pagination';
+import { TimelineFilterBar } from '@/components/FilterBar';
 import Link from 'next/link';
 
 type Props = {
@@ -33,9 +34,50 @@ export function PurchaseHistoryTab({ items, itemsPerPage = 5 }: Props) {
     );
   }
 
+  const [inputKeyword, setInputKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [fromDay, setFromDay] = useState<number | ''>('');
+  const [toDay, setToDay] = useState<number | ''>('');
+  const [onlyWithComment, setOnlyWithComment] = useState(false);
+  const [selectedCarName, setSelectedCarName] = useState('');
+
+  const septemberDays = Array.from({ length: 30 }, (_, i) => i + 1);
+
+  const carNameOptions = useMemo(() => Array.from(new Set(items.map((i) => i.car_name).filter(Boolean))), [items]);
+
+  const filteredItems = useMemo(() => {
+    let list = items;
+
+    if (onlyWithComment) {
+      list = list.filter((item) => Array.isArray((item as any).comments) && item.comment.length > 0);
+    }
+
+    if (searchKeyword) {
+      list = list.filter((item) => item.title?.toLowerCase().includes(searchKeyword.toLowerCase()));
+    }
+
+    return list;
+  }, [items, onlyWithComment, searchKeyword]);
+
   return (
     <div className="p-4">
       <div className="space-y-3">
+        <TimelineFilterBar
+          inputKeyword={inputKeyword}
+          onInputKeywordChange={setInputKeyword}
+          onSearch={() => setSearchKeyword(inputKeyword)}
+          fromDay={fromDay}
+          toDay={toDay}
+          onFromDayChange={setFromDay}
+          onToDayChange={setToDay}
+          days={septemberDays}
+          selectedCarName={selectedCarName}
+          carNameOptions={carNameOptions}
+          onCarChange={setSelectedCarName}
+          totalCount={filteredItems.length}
+          onlyWithComment={onlyWithComment}
+          onOnlyWithCommentChange={setOnlyWithComment}
+        />
         {items.map((item) => (
           <div key={item.id} className="flex items-center gap-4 py-3 border-b border-gray-300">
             {/* ===== 左:画像 ===== */}
