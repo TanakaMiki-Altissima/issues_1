@@ -2,7 +2,7 @@
 import { TimelineItem } from '@/mocks/timeline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Pagination } from '@/components/layout/Pagination';
 import { TimelineFilterBar } from '@/components/FilterBar';
 import Link from 'next/link';
@@ -14,26 +14,6 @@ type Props = {
 
 export function PurchaseHistoryTab({ items, itemsPerPage = 5 }: Props) {
   const [currentPage, setCurrentPage] = useState(1);
-
-  // 総ページ数を計算
-  const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(items.length / itemsPerPage));
-  }, [items.length, itemsPerPage]);
-
-  // 現在のページに表示するアイテムを計算
-  const paginatedItems = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return items.slice(start, start + itemsPerPage);
-  }, [items, currentPage, itemsPerPage]);
-
-  if (items.length === 0) {
-    return (
-      <div className="p-4">
-        <p className="text-gray-500">購入履歴がありません</p>
-      </div>
-    );
-  }
-
   const [inputKeyword, setInputKeyword] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [fromDay, setFromDay] = useState<number | ''>('');
@@ -45,11 +25,14 @@ export function PurchaseHistoryTab({ items, itemsPerPage = 5 }: Props) {
 
   const carNameOptions = useMemo(() => Array.from(new Set(items.map((i) => i.car_name).filter(Boolean))), [items]);
 
+  // フィルタリングされたアイテムを計算
   const filteredItems = useMemo(() => {
     let list = items;
 
     if (onlyWithComment) {
-      list = list.filter((item) => Array.isArray((item as any).comments) && item.comment.length > 0);
+      list = list.filter(
+        (item) => Array.isArray(item.comments) && item.comments.length > 0
+      );
     }
 
     if (searchKeyword) {
@@ -58,6 +41,30 @@ export function PurchaseHistoryTab({ items, itemsPerPage = 5 }: Props) {
 
     return list;
   }, [items, onlyWithComment, searchKeyword]);
+
+  // 総ページ数を計算（フィルタリング後のアイテム数で計算）
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(filteredItems.length / itemsPerPage));
+  }, [filteredItems.length, itemsPerPage]);
+
+  // 現在のページに表示するアイテムを計算（フィルタリング後のアイテムから計算）
+  const paginatedItems = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredItems.slice(start, start + itemsPerPage);
+  }, [filteredItems, currentPage, itemsPerPage]);
+
+  // フィルタが変更されたときにページを1に戻す
+  useEffect(() => {
+  setCurrentPage(1);
+}, [onlyWithComment, searchKeyword]);
+
+  if (items.length === 0) {
+    return (
+      <div className="p-4">
+        <p className="text-gray-500">購入履歴がありません</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4">
@@ -78,15 +85,18 @@ export function PurchaseHistoryTab({ items, itemsPerPage = 5 }: Props) {
           onlyWithComment={onlyWithComment}
           onOnlyWithCommentChange={setOnlyWithComment}
         />
-        {items.map((item) => (
+        {paginatedItems.map((item) => (
           <div key={item.id} className="flex items-center gap-4 py-3 border-b border-gray-300">
             {/* ===== 左:画像 ===== */}
             <div className="relative w-14 h-14 flex-shrink-0">
               <img src="/car_white.png" alt="gazou" className="w-full h-full object-contain bg-blue-100" />
 
               {/* コメントありアイコン */}
-              {item.comment && (
-                <FontAwesomeIcon icon={faMessage} className="absolute -top-4 -right-4 text-orange-400 fa-2x" />
+              {item.comments && item.comments.length > 0 && (
+                <FontAwesomeIcon
+                  icon={faMessage}
+                  className="absolute -top-3 -right-3 text-orange-400 fa-2x"
+                />
               )}
             </div>
 

@@ -5,10 +5,11 @@ import { useParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { UserDetailsSide } from '@/components/layout/UserDetailsSide';
+import { Tabs } from '@/components/Tabs';
 import { mockPurchases } from '@/mocks/purchases';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil, faMessage } from '@fortawesome/free-solid-svg-icons';
-import { faImage } from '@fortawesome/free-regular-svg-icons';
+import { faHouse, faComment, faStar, faWrench, faMessage, faImage, faPencil } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faChartBar } from '@fortawesome/free-regular-svg-icons';
 
 export default function PurchaseDetailPage() {
   const params = useParams<{ id: string }>();
@@ -22,7 +23,34 @@ export default function PurchaseDetailPage() {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [editPurchase, setEditPurchase] = useState(purchase);
+  const [editPurchase, setEditPurchase] = useState(purchase); 
+  
+  const [activeTab] = useState<'purchase'>('purchase');
+
+const tabs = [
+    { id: 'top', label: 'トップ', color: 'blue', icon: faHouse },
+    { id: 'message', label: 'メッセージ', color: 'red', icon: faComment },
+    { id: 'considering', label: '検討中パーツ', color: 'yellow', icon: faStar },
+    { id: 'purchase', label: '購入履歴', color: 'yellow', icon: faClock },
+    { id: 'assessment', label: '査定中', color: 'green', icon: faChartBar },
+    { id: 'buyback', label: '買取履歴', color: 'green', icon: faClock },
+    { id: 'reservation', label: '作業予約', color: 'gray', icon: faWrench },
+    { id: 'work', label: '作業履歴', color: 'gray', icon: faClock },
+  ] as const;
+
+  const getTabStyles = (tab: (typeof tabs)[0]) => {
+    
+    const baseStyles = 'w-20 px-6 py-4 transition-colors';
+    return `${baseStyles} bg-${tab.color}-100 hover:bg-white hover:text-${tab.color}-700`;
+  };
+
+  const tabColorMap = {
+    blue: 'bg-blue-100',
+    red: 'bg-red-100',
+    yellow: 'bg-yellow-100',
+    green: 'bg-green-100',
+    gray: 'bg-gray-100',
+  } as const;
 
   return (
     <div className="h-screen flex flex-col">
@@ -37,7 +65,13 @@ export default function PurchaseDetailPage() {
               <p>購入履歴がありません</p>
             </div>
           )}
-          <div className="p-6 flex-1 ">
+          <div className="pl-4 flex-1 ">
+
+            <Tabs
+  tabs={tabs}
+  activeTab={activeTab}
+  onChange={() => {}}
+/>
             <div className="border-b-2 border-gray-400">
               <h1 className="text-xl font-bold mb-4">購入履歴</h1>
             </div>
@@ -160,12 +194,16 @@ export default function PurchaseDetailPage() {
                     </div>
 
                     {purchase.comments?.map((c) => (
-                      <div key={c.id} className="py-4">
+                      <div key={c.id} className="flex gap-4 py-4 ">
+                        <div className="flex-shrink-0 pt-1">
                         <FontAwesomeIcon icon={faMessage} className="text-orange-400 fa-2x" />
+                        </div>
+                        <div className="flex flex-col">
                         <div className="text-sm text-gray-500">
                           {c.datetime} / {c.storeName} / {c.staffName}
                         </div>
                         <p className="mt-1">{c.body}</p>
+                        </div>
                       </div>
                     ))}
                   </div>

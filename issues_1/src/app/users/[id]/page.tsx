@@ -6,6 +6,7 @@ import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { UserDetailsSide } from '@/components/layout/UserDetailsSide';
 import { TimelineFilterBar } from '@/components/FilterBar';
+import { Tabs } from '@/components/Tabs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faComment, faStar, faWrench, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faChartBar } from '@fortawesome/free-regular-svg-icons';
@@ -146,46 +147,23 @@ export default function UserDetailsPage() {
 
           {/* ===== 右カラム ===== */}
           <div className="flex-1 ml-6 min-w-0 overflow-x-hidden">
-            <div className="flex gap-1 font-semibold">
-              {tabs.map((tab) => {
-                const isActive = activeTab === tab.id;
 
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`
-        flex-1 px-4 py-1
-        ${isActive ? 'bg-white text-' + tab.color + '-700' : 'bg-' + tab.color + '-100'}
-        relative
-      `}
-                  >
-                    {isActive && (
-                      <span
-                        className={`
-            absolute top-0 left-0
-            h-[4px] w-full
-            ${tabColorMap[tab.color]}
-          `}
-                      />
-                    )}
-
-                    <FontAwesomeIcon icon={tab.icon} />
-                    <br />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
+            <Tabs
+  tabs={tabs}
+  activeTab={activeTab}
+  onChange={setActiveTab}
+/>
+            
             {/* タブ別コンテンツ */}
             <div className="mt-6">
-              <div className="flex items-center p-4 border-b-2 border-gray-300">
+
+              {activeTab === 'top' && (
+                <>
+                <div className="flex items-center p-4 border-b-2 border-gray-300">
                 <h2 className="text-xl font-semibold mb-6">取引履歴</h2>
               </div>
 
-              {/* ===== 左：キーワード検索 ===== */}
-              <TimelineFilterBar
+               <TimelineFilterBar
                 inputKeyword={inputKeyword}
                 onInputKeywordChange={setInputKeyword}
                 onSearch={() => setSearchKeyword(inputKeyword)}
@@ -202,7 +180,6 @@ export default function UserDetailsPage() {
                 onOnlyWithCommentChange={setOnlyWithComment}
               />
 
-              {activeTab === 'top' && (
                 <div className="p-4">
                   <div className="space-y-3">
                     {paginatedTimeline.map((item) => (
@@ -266,10 +243,12 @@ export default function UserDetailsPage() {
                         )}
                       </div>
                     ))}
+                    <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
                   </div>
                 </div>
+                </>
               )}
-
+             
               {activeTab === 'message' && (
                 <div className="p-4">
                   <h2 className="text-xl font-semibold mb-4">メッセージ</h2>
@@ -314,7 +293,6 @@ export default function UserDetailsPage() {
                 </div>
               )}
             </div>
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
           </div>
         </main>
       </div>
