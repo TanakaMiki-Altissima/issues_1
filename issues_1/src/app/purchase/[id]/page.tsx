@@ -15,7 +15,12 @@ export default function PurchaseDetailPage() {
   const params = useParams<{ id: string }>();
   const purchaseId = params.id;
 
-  const purchase = mockPurchases.find((p) => p.id === purchaseId);
+  const originalPurchase = mockPurchases.find((p) => p.id === purchaseId);
+
+  const [purchase, setPurchase] = useState(originalPurchase);
+  const [editPurchase, setEditPurchase] = useState(originalPurchase);
+
+  //   const purchase = mockPurchases.find((p) => p.id === purchaseId);
 
   const customerId = purchase?.ownerId;
 
@@ -23,11 +28,11 @@ export default function PurchaseDetailPage() {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [editPurchase, setEditPurchase] = useState(purchase); 
-  
+  //   const [editPurchase, setEditPurchase] = useState(purchase);
+
   const [activeTab] = useState<'purchase'>('purchase');
 
-const tabs = [
+  const tabs = [
     { id: 'top', label: 'トップ', color: 'blue', icon: faHouse },
     { id: 'message', label: 'メッセージ', color: 'red', icon: faComment },
     { id: 'considering', label: '検討中パーツ', color: 'yellow', icon: faStar },
@@ -39,7 +44,6 @@ const tabs = [
   ] as const;
 
   const getTabStyles = (tab: (typeof tabs)[0]) => {
-    
     const baseStyles = 'w-20 px-6 py-4 transition-colors';
     return `${baseStyles} bg-${tab.color}-100 hover:bg-white hover:text-${tab.color}-700`;
   };
@@ -51,6 +55,11 @@ const tabs = [
     green: 'bg-green-100',
     gray: 'bg-gray-100',
   } as const;
+
+  const displayPurchase = isEditing ? editPurchase : purchase;
+
+  const [selectedStore, setSelectedStore] = useState('');
+  const [selectedStaff, setSelectedStaff] = useState('');
 
   return (
     <div className="h-screen flex flex-col">
@@ -66,12 +75,7 @@ const tabs = [
             </div>
           )}
           <div className="pl-4 flex-1 ">
-
-            <Tabs
-  tabs={tabs}
-  activeTab={activeTab}
-  onChange={() => {}}
-/>
+            <Tabs tabs={tabs} activeTab={activeTab} onChange={() => {}} />
             <div className="border-b-2 border-gray-400">
               <h1 className="text-xl font-bold mb-4">購入履歴</h1>
             </div>
@@ -85,24 +89,79 @@ const tabs = [
                     )}
                   </div>
                   <div className="flex items-center gap-1">
-                    <span className="text-sm text-gray-500">{purchase.date}/</span>
-                    <span className="text-sm text-gray-500">{purchase.car_name}</span>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        className="border px-2 py-1 text-sm"
+                        value={editPurchase?.date ?? ''}
+                        onChange={(e) => setEditPurchase({ ...editPurchase!, date: e.target.value })}
+                      />
+                    ) : (
+                      <span className="text-sm text-gray-500">{displayPurchase?.date}/</span>
+                    )}
+                    {isEditing ? (
+                      <input
+                        className="border px-2 py-1"
+                        value={editPurchase?.car_name ?? ''}
+                        onChange={(e) => setEditPurchase({ ...editPurchase!, car_name: e.target.value })}
+                      />
+                    ) : (
+                      <span className="text-sm text-gray-500">{displayPurchase?.car_name}</span>
+                    )}
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">{purchase.store_name}</p>
+                    {isEditing ? (
+                      <input
+                        className="border px-2 py-1 text-sm"
+                        value={editPurchase?.store_name ?? ''}
+                        onChange={(e) => setEditPurchase({ ...editPurchase!, store_name: e.target.value })}
+                      />
+                    ) : (
+                      <p className="text-sm text-gray-500 mb-1">{displayPurchase?.store_name}</p>
+                    )}
                   </div>
                   <div>
-                    <p className="text-sm mb-1">{purchaseId}</p>
+                    {isEditing ? (
+                      <input
+                        className="border px-2 py-1 text-sm"
+                        value={editPurchase?.id ?? ''}
+                        onChange={(e) => setEditPurchase({ ...editPurchase!, id: e.target.value })}
+                      />
+                    ) : (
+                      <p className="text-sm mb-1">{displayPurchase?.id}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="flex items-center gap-8 border-b-1 border-gray-400 p-2">
                   <div>
-                    <p className="font-medium">{purchase.title}</p>
+                    {isEditing ? (
+                      <input
+                        className="border px-2 py-1 w-full"
+                        value={editPurchase?.title ?? ''}
+                        onChange={(e) => setEditPurchase({ ...editPurchase!, title: e.target.value })}
+                      />
+                    ) : (
+                      <p className="font-medium">{displayPurchase?.title}</p>
+                    )}
                   </div>
 
                   <div className="ml-auto">
-                    <p className="font-medium text-lg text-blue-500">¥{purchase.price}</p>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        className="border px-2 py-1 w-32"
+                        value={editPurchase?.price ?? ''}
+                        onChange={(e) =>
+                          setEditPurchase({
+                            ...editPurchase!,
+                            price: e.target.value,
+                          })
+                        }
+                      />
+                    ) : (
+                      <p className="font-medium text-lg text-blue-500">¥{displayPurchase?.price}</p>
+                    )}
                   </div>
                 </div>
                 <div className="border-b-1 border-gray-400 flex p-2">
@@ -111,17 +170,42 @@ const tabs = [
                   {/* 中央配置用ラッパー */}
                   <div className="flex-1 flex justify-center">
                     {/* 実体（背景を右端まで） */}
-                    <p className="w-full bg-gray-100 text-lg text-left p-2 lex-1  rounded">{purchase.memo}</p>
+                    {isEditing ? (
+                      <textarea
+                        className="w-full border p-2 rounded"
+                        rows={4}
+                        value={editPurchase?.memo ?? ''}
+                        onChange={(e) => setEditPurchase({ ...editPurchase!, memo: e.target.value })}
+                      />
+                    ) : (
+                      <p className="w-full bg-gray-100 text-lg text-left p-2 lex-1  rounded">{displayPurchase?.memo}</p>
+                    )}
                   </div>
                 </div>
                 <div className="border-b-1 border-gray-400 flex p-2">
                   <p className="text-sm text-gray-500 w-115 flex-shrink-0">商品URL</p>
-                  <p className="font-medium text-lg text-blue-500 break-all">{purchase.url}</p>
+                  {isEditing ? (
+                    <input
+                      className="border px-2 py-1 w-full"
+                      value={editPurchase?.url ?? ''}
+                      onChange={(e) => setEditPurchase({ ...editPurchase!, url: e.target.value })}
+                    />
+                  ) : (
+                    <p className="font-medium text-lg text-blue-500 break-all">{displayPurchase?.url}</p>
+                  )}
                 </div>
                 {purchase.car_name && (
                   <div className="border-b-1 border-gray-400 flex p-2">
                     <p className="text-sm text-gray-500 w-115 flex-shrink-0">取付車</p>
-                    <p className="font-medium break-all">{purchase.car_name}</p>
+                    {isEditing ? (
+                      <input
+                        className="border px-2 py-1"
+                        value={editPurchase?.car_name ?? ''}
+                        onChange={(e) => setEditPurchase({ ...editPurchase!, car_name: e.target.value })}
+                      />
+                    ) : (
+                      <p className="font-medium break-all">{displayPurchase?.car_name}</p>
+                    )}
                   </div>
                 )}
                 <div className="flex flex-col items-center gap-4 py-6 border-b-1 border-gray-400">
@@ -140,7 +224,7 @@ const tabs = [
                       <button
                         className="px-4 py-2 bg-blue-500 text-white rounded"
                         onClick={() => {
-                          // 今回は保存しない（＝見た目だけ変更）
+                          setPurchase(editPurchase);
                           setIsEditing(false);
                         }}
                       >
@@ -181,28 +265,64 @@ const tabs = [
 
                 {purchase.comments && (
                   <div className="col-span-2">
-                    <div className="border-b-1 border-gray-400">
-                      <p className="text-xl font-bold mb-4">管理コメント</p>
+                    <div className="flex items-center justify-between mb-4 border-b-1 border-gray-400">
+                      <p className="text-xl font-bold">管理コメント</p>
+
+                      <div className="flex gap-2">
+                        {/* 店舗 */}
+                        <select
+                          className="border rounded px-2 py-1 text-sm"
+                          value={selectedStore}
+                          onChange={(e) => setSelectedStore(e.target.value)}
+                        >
+                          <option value="" disabled>
+                            店舗
+                          </option>
+                          <option value="練馬店">練馬店</option>
+                        </select>
+
+                        <select
+                          className="border rounded px-2 py-1 text-sm"
+                          value={selectedStaff}
+                          onChange={(e) => setSelectedStaff(e.target.value)}
+                        >
+                          <option value="" disabled>
+                            担当
+                          </option>
+                          <option value="後藤高志">後藤高志</option>
+                        </select>
+                      </div>
                     </div>
                     <div className="flex gap-4 m-2">
                       <div className="bg-gray-100 rounded fa-3x">
                         <FontAwesomeIcon icon={faImage} />
                       </div>
                       <div className="bg-gray-100 w-[280px] rounded">
-                        <input placeholder="コメントを追加する練馬店:後藤高志" />
+                        <input
+                          className="w-full px-2 py-1"
+                          placeholder={`コメントを追加する ${selectedStore} : ${selectedStaff}`}
+                        />
                       </div>
+                      <button
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-sm"
+                        onClick={() => {
+                          console.log('send');
+                        }}
+                      >
+                        送信
+                      </button>
                     </div>
 
                     {purchase.comments?.map((c) => (
                       <div key={c.id} className="flex gap-4 py-4 ">
                         <div className="flex-shrink-0 pt-1">
-                        <FontAwesomeIcon icon={faMessage} className="text-orange-400 fa-2x" />
+                          <FontAwesomeIcon icon={faMessage} className="text-orange-400 fa-2x" />
                         </div>
                         <div className="flex flex-col">
-                        <div className="text-sm text-gray-500">
-                          {c.datetime} / {c.storeName} / {c.staffName}
-                        </div>
-                        <p className="mt-1">{c.body}</p>
+                          <div className="text-sm text-gray-500">
+                            {c.datetime} / {c.storeName} / {c.staffName}
+                          </div>
+                          <p className="mt-1">{c.body}</p>
                         </div>
                       </div>
                     ))}

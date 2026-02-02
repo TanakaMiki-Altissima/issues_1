@@ -25,22 +25,50 @@ export function PurchaseHistoryTab({ items, itemsPerPage = 5 }: Props) {
 
   const carNameOptions = useMemo(() => Array.from(new Set(items.map((i) => i.car_name).filter(Boolean))), [items]);
 
+  const parseDotDate = (s?: string): Date | null => {
+    if (!s) return null;
+    const m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+    if (!m) return null;
+    return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  };
+
   // フィルタリングされたアイテムを計算
   const filteredItems = useMemo(() => {
     let list = items;
 
     if (onlyWithComment) {
-      list = list.filter(
-        (item) => Array.isArray(item.comments) && item.comments.length > 0
-      );
+      list = list.filter((item) => Array.isArray(item.comments) && item.comments.length > 0);
     }
 
     if (searchKeyword) {
       list = list.filter((item) => item.title?.toLowerCase().includes(searchKeyword.toLowerCase()));
     }
 
+    if (searchKeyword.trim() !== '') {
+      list = list.filter((item) => 'title' in item && item.title.toLowerCase().includes(searchKeyword.toLowerCase()));
+    }
+
+    if (fromDay || toDay) {
+      list = list.filter((item) => {
+        const d = parseDotDate(item.date);
+        if (!d) return false;
+
+        // 2022年9月の日付として固定
+        const day = d.getDate();
+
+        if (fromDay && day < fromDay) return false;
+        if (toDay && day > toDay) return false;
+
+        return true;
+      });
+    }
+
+    if (selectedCarName) {
+      list = list.filter((item) => item.car_name === selectedCarName);
+    }
+
     return list;
-  }, [items, onlyWithComment, searchKeyword]);
+  }, [items, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName]);
 
   // 総ページ数を計算（フィルタリング後のアイテム数で計算）
   const totalPages = useMemo(() => {
@@ -55,8 +83,8 @@ export function PurchaseHistoryTab({ items, itemsPerPage = 5 }: Props) {
 
   // フィルタが変更されたときにページを1に戻す
   useEffect(() => {
-  setCurrentPage(1);
-}, [onlyWithComment, searchKeyword]);
+    setCurrentPage(1);
+  }, [onlyWithComment, searchKeyword]);
 
   if (items.length === 0) {
     return (
@@ -93,10 +121,7 @@ export function PurchaseHistoryTab({ items, itemsPerPage = 5 }: Props) {
 
               {/* コメントありアイコン */}
               {item.comments && item.comments.length > 0 && (
-                <FontAwesomeIcon
-                  icon={faMessage}
-                  className="absolute -top-3 -right-3 text-orange-400 fa-2x"
-                />
+                <FontAwesomeIcon icon={faMessage} className="absolute -top-3 -right-3 text-orange-400 fa-2x" />
               )}
             </div>
 

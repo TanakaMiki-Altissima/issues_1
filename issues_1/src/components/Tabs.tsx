@@ -3,7 +3,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
-
 type Tab = {
   id: string;
   label: string;
@@ -41,38 +40,37 @@ const bgColorMap: Record<string, string> = {
   gray: 'bg-gray-100',
 };
 
-
 export function Tabs({ tabs, activeTab, onChange }: Props) {
-    return (
+  return (
     <div className="flex gap-1 font-semibold">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
 
-    return (
-    <button
-  key={tab.id}
-  onClick={() => onChange(tab.id)}
-  className={`
+        return (
+          <button
+            key={tab.id}
+            onClick={() => onChange(tab.id)}
+            className={`
     flex-1 px-4 py-1 relative
     ${isActive ? `bg-white ${textColorMap[tab.color]}` : bgColorMap[tab.color]}
   `}
->
-                    {isActive && (
-                      <span
-                        className={`
+          >
+            {isActive && (
+              <span
+                className={`
             absolute top-0 left-0
             h-[4px] w-full
             ${tabColorMap[tab.color]}
           `}
-                      />
-                    )}
+              />
+            )}
 
-                    <FontAwesomeIcon icon={tab.icon} />
-                    <br />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-            );
+            <FontAwesomeIcon icon={tab.icon} />
+            <br />
+            <span>{tab.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
 }
