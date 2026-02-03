@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { UserDetailsSide } from '@/components/layout/UserDetailsSide';
@@ -13,6 +13,7 @@ import { faClock, faChartBar } from '@fortawesome/free-regular-svg-icons';
 import { Pagination } from '@/components/layout/Pagination';
 import { PurchaseHistoryTab } from '@/components/tabs/PurchaseHistoryTab';
 import { mockTimeline } from '@/mocks/timeline';
+import Link from 'next/link';
 
 function hasComments(item: unknown): item is { comments: { id: string }[] } {
   return typeof item === 'object' && item !== null && 'comments' in item && Array.isArray((item as any).comments);
@@ -29,6 +30,20 @@ export default function UserDetailsPage() {
 
   const [fromDay, setFromDay] = useState<number | ''>('');
   const [toDay, setToDay] = useState<number | ''>('');
+
+  const pathname = usePathname();
+
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+
+  // ★ sessionStorageから削除IDを読み込む
+  useEffect(() => {
+    const deletedId = sessionStorage.getItem('deletedPurchaseId');
+    
+    if (deletedId) {
+      setDeletedIds(new Set([deletedId]));
+      sessionStorage.removeItem('deletedPurchaseId');
+    }
+  }, [pathname]);
 
   const parseDotDate = (s: string): Date | null => {
     const m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
@@ -80,6 +95,11 @@ export default function UserDetailsPage() {
 
   const filteredTimeline = useMemo(() => {
     let list = mockTimeline;
+
+    list = list.filter((item) => item.ownerId === customerId);
+
+    // ★ 削除されたIDを除外
+    list = list.filter((item) => !deletedIds.has(item.id));
 
     list = list.filter((item) => item.ownerId === customerId);
 
@@ -235,7 +255,16 @@ export default function UserDetailsPage() {
                               {/* 店舗名 + ＞ */}
                               <div className="flex items-center gap-6 text-sm text-gray-500">
                                 <span>{item.store_name}</span>
-                                <span className="text-gray-400 ">＞</span>
+                                {item.type === 'purchase' ? (
+                                  <Link
+                                    href={`/purchase/${item.id}`}
+                                    className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                                  >
+                                    ＞
+                                  </Link>
+                                ) : (
+                                  <span className="text-gray-300">＞</span>
+                                )}
                               </div>
                             </div>
                           )}

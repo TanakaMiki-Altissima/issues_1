@@ -20,15 +20,11 @@ export default function PurchaseDetailPage() {
   const [purchase, setPurchase] = useState(originalPurchase);
   const [editPurchase, setEditPurchase] = useState(originalPurchase);
 
-  //   const purchase = mockPurchases.find((p) => p.id === purchaseId);
-
   const customerId = purchase?.ownerId;
 
   const router = useRouter();
 
   const [isEditing, setIsEditing] = useState(false);
-
-  //   const [editPurchase, setEditPurchase] = useState(purchase);
 
   const [activeTab] = useState<'purchase'>('purchase');
 
@@ -272,14 +268,15 @@ export default function PurchaseDetailPage() {
                   <button
                     className="text-red-500 hover:underline text-sm text-left"
                     onClick={() => {
-                      const ok = window.confirm('この購入履歴を削除してもよろしいですか？');
+  const ok = window.confirm('この購入履歴を削除してもよろしいですか？');
+  if (!ok) return;
 
-                      if (!ok) return;
+  // 削除したIDを一時保存
+  sessionStorage.setItem('deletedPurchaseId', purchaseId);
 
-                      // 実際の削除処理はしない
-                      // 一覧ページへ戻す
-                      router.back();
-                    }}
+  // 購入一覧へ戻る
+  router.push(`/users/${customerId}`);
+}}
                   >
                     削除する
                   </button>
@@ -324,14 +321,13 @@ export default function PurchaseDetailPage() {
                         <FontAwesomeIcon icon={faImage} />
                       </div>
                       <div className="flex-1 flex flex-col gap-1 bg-gray-100 rounded">
-                      
                         <input
-                            className="w-full px-2 py-1 bg-transparent text-black placeholder:text-black"
-                            placeholder="コメントを追加する"
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                          />
-                       
+                          className="w-full px-2 py-1 bg-transparent text-black placeholder:text-black"
+                          placeholder="コメントを追加する"
+                          value={newComment}
+                          onChange={(e) => setNewComment(e.target.value)}
+                        />
+
                         <div className="text-sm text-black pl-2">
                           {selectedStore || '店舗未選択'} : {selectedStaff || '担当未選択'}
                         </div>
