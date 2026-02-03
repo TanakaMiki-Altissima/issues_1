@@ -60,6 +60,32 @@ export default function PurchaseDetailPage() {
 
   const [selectedStore, setSelectedStore] = useState('');
   const [selectedStaff, setSelectedStaff] = useState('');
+  const [newComment, setNewComment] = useState('');
+
+  const handleAddComment = () => {
+    if (!newComment.trim() || !selectedStore || !selectedStaff) {
+      alert('店舗、担当、コメントを入力してください');
+      return;
+    }
+
+    const now = new Date();
+    const datetime = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+    const newCommentObj = {
+      id: `comment-${Date.now()}`,
+      datetime,
+      storeName: selectedStore,
+      staffName: selectedStaff,
+      body: newComment,
+    };
+
+    setPurchase({
+      ...purchase!,
+      comments: [...(purchase?.comments || []), newCommentObj],
+    });
+
+    setNewComment('');
+  };
 
   return (
     <div className="h-screen flex flex-col">
@@ -265,13 +291,13 @@ export default function PurchaseDetailPage() {
 
                 {purchase.comments && (
                   <div className="col-span-2">
-                    <div className="flex items-center justify-between mb-4 border-b-1 border-gray-400">
+                    <div className="flex items-center justify-between mb-4 p-4 border-b-1 border-gray-400">
                       <p className="text-xl font-bold">管理コメント</p>
 
                       <div className="flex gap-2">
                         {/* 店舗 */}
                         <select
-                          className="border rounded px-2 py-1 text-sm"
+                          className="border rounded px-2 text-sm"
                           value={selectedStore}
                           onChange={(e) => setSelectedStore(e.target.value)}
                         >
@@ -297,17 +323,22 @@ export default function PurchaseDetailPage() {
                       <div className="bg-gray-100 rounded fa-3x">
                         <FontAwesomeIcon icon={faImage} />
                       </div>
-                      <div className="bg-gray-100 w-[280px] rounded">
+                      <div className="flex-1 flex flex-col gap-1 bg-gray-100 rounded">
+                      
                         <input
-                          className="w-full px-2 py-1"
-                          placeholder={`コメントを追加する ${selectedStore} : ${selectedStaff}`}
-                        />
+                            className="w-full px-2 py-1 bg-transparent text-black placeholder:text-black"
+                            placeholder="コメントを追加する"
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                          />
+                       
+                        <div className="text-sm text-black pl-2">
+                          {selectedStore || '店舗未選択'} : {selectedStaff || '担当未選択'}
+                        </div>
                       </div>
                       <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-sm"
-                        onClick={() => {
-                          console.log('send');
-                        }}
+                        className="bg-blue-500 text-white px-4 rounded hover:bg-blue-600 text-sm h-10 flex-shrink-0"
+                        onClick={handleAddComment}
                       >
                         送信
                       </button>
