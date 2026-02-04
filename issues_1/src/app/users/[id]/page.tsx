@@ -1,18 +1,25 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { UserDetailsSide } from '@/components/layout/UserDetailsSide';
+import { TimelineFilterBar } from '@/components/FilterBar';
+import { Tabs } from '@/components/Tabs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass, faHouse, faComment, faStar, faWrench, faMessage } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faComment, faStar, faWrench, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faChartBar } from '@fortawesome/free-regular-svg-icons';
-
+import { Pagination } from '@/components/layout/Pagination';
+import { PurchaseHistoryTab } from '@/components/tabs/PurchaseHistoryTab';
 import { mockTimeline } from '@/mocks/timeline';
+import Link from 'next/link';
+
+function hasComments(item: unknown): item is { comments: { id: string }[] } {
+  return typeof item === 'object' && item !== null && 'comments' in item && Array.isArray((item as any).comments);
+}
 
 export default function UserDetailsPage() {
-  
   const [activeTab, setActiveTab] = useState('top');
 
   const params = useParams<{ id: string }>();
@@ -23,6 +30,20 @@ export default function UserDetailsPage() {
 
   const [fromDay, setFromDay] = useState<number | ''>('');
   const [toDay, setToDay] = useState<number | ''>('');
+
+  const pathname = usePathname();
+
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+
+  // ★ sessionStorageから削除IDを読み込む
+  useEffect(() => {
+    const deletedId = sessionStorage.getItem('deletedPurchaseId');
+    
+    if (deletedId) {
+      setDeletedIds(new Set([deletedId]));
+      sessionStorage.removeItem('deletedPurchaseId');
+    }
+  }, [pathname]);
 
   const parseDotDate = (s: string): Date | null => {
     const m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
@@ -75,11 +96,14 @@ export default function UserDetailsPage() {
   const filteredTimeline = useMemo(() => {
     let list = mockTimeline;
 
+    // ★ 削除されたIDを除外
+    list = list.filter((item) => !deletedIds.has(item.id));
+
     list = list.filter((item) => item.ownerId === customerId);
 
     // 「メモ付きのみ」にチェックが入っている場合
     if (onlyWithComment) {
-      list = list.filter((item) => 'comment' in item && item.comment);
+      list = list.filter((item) => 'comments' in item && Array.isArray(item.comments) && item.comments.length > 0);
     }
 
     if (searchKeyword.trim() !== '') {
@@ -106,7 +130,7 @@ export default function UserDetailsPage() {
     }
 
     return list;
-  }, [customerId, mockTimeline, activeTab, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName]);
+  }, [customerId, mockTimeline, activeTab, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName, deletedIds]);
 
   const carNameOptions = useMemo(() => {
     return Array.from(
@@ -114,18 +138,22 @@ export default function UserDetailsPage() {
     );
   }, [mockTimeline]);
 
-  const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(filteredTimeline.length / itemsPerPage));
-  }, [filteredTimeline.length, itemsPerPage]);
-
   const paginatedTimeline = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return filteredTimeline.slice(start, start + itemsPerPage);
   }, [filteredTimeline, currentPage, itemsPerPage]);
 
+  const purchaseTimeline = useMemo(() => {
+    return filteredTimeline.filter((item) => item.type === 'purchase');
+  }, [filteredTimeline]);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [activeTab]);
+
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(filteredTimeline.length / itemsPerPage));
+  }, [filteredTimeline.length, itemsPerPage]);
 
   return (
     <div className="h-screen flex flex-col">
@@ -133,206 +161,117 @@ export default function UserDetailsPage() {
       <div className="flex flex-1">
         <Sidebar />
         <main className="flex flex-1">
-            <UserDetailsSide />
+          <UserDetailsSide customerId={customerId} />
 
           {/* ===== 右カラム ===== */}
           <div className="flex-1 ml-6 min-w-0 overflow-x-hidden">
-            <div className="flex gap-1 font-semibold">
-              {tabs.map((tab) => {
-                const isActive = activeTab === tab.id;
+            <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`
-        flex-1 px-4 py-1
-        ${isActive ? 'bg-white text-' + tab.color + '-700' : 'bg-' + tab.color + '-100'}
-        relative
-      `}
-                  >
-                    {isActive && (
-                      <span
-                        className={`
-            absolute top-0 left-0
-            h-[4px] w-full
-            ${tabColorMap[tab.color]}
-          `}
-                      />
-                    )}
-
-                    <FontAwesomeIcon icon={tab.icon} />
-                    <br />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* タブコンテンツ */}
+            {/* タブ別コンテンツ */}
             <div className="mt-6">
-
-              <div className="flex items-center p-4 border-b-2 border-gray-300">
-                <h2 className="text-xl font-semibold mb-6">取引履歴</h2>
-              </div>
-              <div className="flex items-center p-4 border-b border-gray-300">
-                
-                {/* ===== 左：キーワード検索 ===== */}
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <FontAwesomeIcon
-                      icon={faMagnifyingGlass}
-                      className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
-                    />
-                    <input
-                      placeholder="キーワードで検索"
-                      value={inputKeyword}
-                      onChange={(e) => setInputKeyword(e.target.value)}
-                      className="w-[280px] pl-9 pr-2 py-2 rounded bg-gray-100 text-gray-600 outline-none"
-                    />
-                  </div>
-
-                  <button
-                    className="px-5 py-2 rounded bg-blue-700 text-white"
-                    onClick={() => setSearchKeyword(inputKeyword)}
-                  >
-                    検索
-                  </button>
-                </div>
-
-                {/* ===== 中央：日付絞り込み ===== */}
-                <div className="flex items-center gap-2 mx-auto">
-                  <select
-                    value={fromDay}
-                    onChange={(e) => setFromDay(e.target.value ? Number(e.target.value) : '')}
-                    className="w-[140px] px-3 py-2 border border-gray-300 rounded bg-white text-sm"
-                  >
-                    <option value=""></option>
-                    {septemberDays.map((day) => (
-                      <option key={day} value={day}>
-                        9月{day}日
-                      </option>
-                    ))}
-                  </select>
-
-                  <span>〜</span>
-
-                  <select
-                    value={toDay}
-                    onChange={(e) => setToDay(e.target.value ? Number(e.target.value) : '')}
-                    className="w-[140px] px-3 py-2 border border-gray-300 rounded bg-white text-sm"
-                  >
-                    <option value=""></option>
-                    {septemberDays.map((day) => (
-                      <option key={day} value={day}>
-                        9月{day}日
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* ===== 右：登録車 ===== */}
-                <div className="flex items-center gap-6 ml-auto">
-                  <select
-                    value={selectedCarName}
-                    onChange={(e) => setSelectedCarName(e.target.value)}
-                    className="w-[220px] px-3 py-2 border border-gray-300 rounded bg-white text-sm"
-                  >
-                    <option value="">登録車から絞り込む</option>
-                    {carNameOptions.map((name) => (
-                      <option key={name} value={name}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-6 p-4 border-b border-gray-300">
-                <p className="text-sm text-gray-700">{filteredTimeline.length} 件</p>
-
-              <div className="flex items-center gap-6 ml-auto">
-                <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={onlyWithComment}
-                    onChange={(e) => setOnlyWithComment(e.target.checked)}
-                    className="w-4 h-4"
-                  />
-                  メモ付きのみ
-                </label>
-                </div>
-              </div>
-
-              {/* タブ別コンテンツ */}
               {activeTab === 'top' && (
-                <div className="p-4">
-
-
-                  <div className="space-y-3">
-                    {paginatedTimeline.map((item) => (
-                      <div key={item.id} className="flex items-center gap-4 py-3 border-b border-gray-300">
-                        {/* ===== 左：画像 ===== */}
-                        <div className="relative w-14 h-14 flex-shrink-0">
-                          <img src="/car_white.png" alt="gazou" className="w-full h-full object-contain bg-blue-100" />
-
-                          {/* コメントありアイコン */}
-                          {'comment' in item && item.comment && (
-                            <FontAwesomeIcon
-                              icon={faMessage}
-                              className="absolute -top-4 -right-4 text-orange-400 fa-2x"
-                            />
-                          )}
-                        </div>
-
-                        {/* ===== 日付 & 車種 ===== */}
-                        <div className="w-40">
-                          <p className="text-sm text-gray-500">{item.date}</p>
-
-                          {item.car_name ? (
-                            <p className="text-sm text-gray-800">{item.car_name}</p>
-                          ) : (
-                            <p className="text-sm text-red-600">未設定</p>
-                          )}
-                        </div>
-
-                        {/* ===== 履歴種別 ===== */}
-                        <div className="w-24">
-                          {item.type === 'purchase' && (
-                            <span className="bg-yellow-100 text-sm font-medium">購入履歴</span>
-                          )}
-                          {item.type === 'work' && <span className="bg-gray-100 text-sm font-medium">作業履歴</span>}
-                          {item.type === 'inspection' && (
-                            <span className="bg-green-100 text-sm font-medium">査定履歴</span>
-                          )}
-                          {item.type === 'reservation' && (
-                            <span className="bg-gray-100 text-sm font-medium">作業予約</span>
-                          )}
-                          {item.type === 'consideration' && (
-                            <span className="bg-yellow-100 text-sm font-medium">検討中パーツ</span>
-                          )}
-                        </div>
-
-                        {/* ===== タイトル ===== */}
-                        <div className="flex-1">{'title' in item && <p className="font-medium">{item.title}</p>}</div>
-
-                        {/* ===== 右端：価格 / 店舗 ===== */}
-                        {'price' in item && (
-                          <div className="flex items-center gap-3 whitespace-nowrap">
-                            {/* 金額 */}
-                            <p className="text-gray-500">¥{item.price}</p>
-
-                            {/* 店舗名 + ＞ */}
-                            <div className="flex items-center gap-6 text-sm text-gray-500">
-                              <span>{item.store_name}</span>
-                              <span className="text-gray-400 ">＞</span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                <>
+                  <div className="flex items-center p-4 border-b-2 border-gray-300">
+                    <h2 className="text-xl font-semibold mb-6">取引履歴</h2>
                   </div>
-                </div>
+
+                  <TimelineFilterBar
+                    inputKeyword={inputKeyword}
+                    onInputKeywordChange={setInputKeyword}
+                    onSearch={() => setSearchKeyword(inputKeyword)}
+                    fromDay={fromDay}
+                    toDay={toDay}
+                    onFromDayChange={setFromDay}
+                    onToDayChange={setToDay}
+                    days={septemberDays}
+                    selectedCarName={selectedCarName}
+                    carNameOptions={carNameOptions}
+                    onCarChange={setSelectedCarName}
+                    totalCount={filteredTimeline.length}
+                    onlyWithComment={onlyWithComment}
+                    onOnlyWithCommentChange={setOnlyWithComment}
+                  />
+
+                  <div className="p-4">
+                    <div className="space-y-3">
+                      {paginatedTimeline.map((item) => (
+                        <div key={item.id} className="flex items-center gap-4 py-3 border-b border-gray-300">
+                          {/* ===== 左：画像 ===== */}
+                          <div className="relative w-14 h-14 flex-shrink-0">
+                            <img
+                              src="/car_white.png"
+                              alt="gazou"
+                              className="w-full h-full object-contain bg-blue-100"
+                            />
+
+                            {/* コメントありアイコン */}
+                            {hasComments(item) && item.comments.length > 0 && (
+                              <FontAwesomeIcon
+                                icon={faMessage}
+                                className="absolute -top-4 -right-4 text-orange-400 fa-2x"
+                              />
+                            )}
+                          </div>
+
+                          {/* ===== 日付 & 車種 ===== */}
+                          <div className="w-40">
+                            <p className="text-sm text-gray-500">{item.date}</p>
+
+                            {item.car_name ? (
+                              <p className="text-sm text-gray-800">{item.car_name}</p>
+                            ) : (
+                              <p className="text-sm text-red-600">未設定</p>
+                            )}
+                          </div>
+
+                          {/* ===== 履歴種別 ===== */}
+                          <div className="w-24">
+                            {item.type === 'purchase' && (
+                              <span className="bg-yellow-100 text-sm font-medium">購入履歴</span>
+                            )}
+                            {item.type === 'work' && <span className="bg-gray-100 text-sm font-medium">作業履歴</span>}
+                            {item.type === 'inspection' && (
+                              <span className="bg-green-100 text-sm font-medium">査定履歴</span>
+                            )}
+                            {item.type === 'reservation' && (
+                              <span className="bg-gray-100 text-sm font-medium">作業予約</span>
+                            )}
+                            {item.type === 'consideration' && (
+                              <span className="bg-yellow-100 text-sm font-medium">検討中パーツ</span>
+                            )}
+                          </div>
+
+                          {/* ===== タイトル ===== */}
+                          <div className="flex-1">{'title' in item && <p className="font-medium">{item.title}</p>}</div>
+
+                          {/* ===== 右端：価格 / 店舗 ===== */}
+                          {'price' in item && (
+                            <div className="flex items-center gap-3 whitespace-nowrap">
+                              {/* 金額 */}
+                              <p className="text-gray-500">¥{item.price}</p>
+
+                              {/* 店舗名 + ＞ */}
+                              <div className="flex items-center gap-6 text-sm text-gray-500">
+                                <span>{item.store_name}</span>
+                                {item.type === 'purchase' ? (
+                                  <Link
+                                    href={`/purchase/${item.id}`}
+                                    className="text-gray-400 hover:text-gray-600 cursor-pointer"
+                                  >
+                                    ＞
+                                  </Link>
+                                ) : (
+                                  <span className="text-gray-300">＞</span>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+                    </div>
+                  </div>
+                </>
               )}
 
               {activeTab === 'message' && (
@@ -349,12 +288,7 @@ export default function UserDetailsPage() {
                 </div>
               )}
 
-              {activeTab === 'purchase' && (
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-4">購入履歴</h2>
-                  <p>購入履歴内容</p>
-                </div>
-              )}
+              {activeTab === 'purchase' && <PurchaseHistoryTab items={purchaseTimeline} />}
 
               {activeTab === 'assessment' && (
                 <div className="p-4">
@@ -384,50 +318,6 @@ export default function UserDetailsPage() {
                 </div>
               )}
             </div>
-
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-4 mt-6">
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === 1
-                      ? 'border border-gray-300 text-gray-400 cursor-not-allowed'
-                      : 'border border-gray-300 hover:bg-gray-200'
-                  }`}
-                >
-                  前へ
-                </button>
-
-                {/* ページ番号（全文字表示） */}
-                <div className="flex items-center gap-2">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => setCurrentPage(p)}
-                      className={`px-3 py-1 rounded ${
-                        currentPage === p
-                          ? 'bg-black text-white'
-                          : 'bg-transparent text-gray-700 border border-gray-300 hover:bg-gray-100'
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === totalPages
-                      ? 'border border-gray-300 text-gray-400 cursor-not-allowed'
-                      : 'border border-gray-300 hover:bg-gray-200'
-                  }`}
-                >
-                  次へ
-                </button>
-              </div>
-            )}
           </div>
         </main>
       </div>
