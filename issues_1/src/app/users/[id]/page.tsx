@@ -39,7 +39,7 @@ export default function UserDetailsPage() {
   // ★ sessionStorageから削除IDを読み込む
   useEffect(() => {
     const deletedId = sessionStorage.getItem('deletedPurchaseId');
-    
+
     if (deletedId) {
       setDeletedIds(new Set([deletedId]));
       sessionStorage.removeItem('deletedPurchaseId');
@@ -131,7 +131,17 @@ export default function UserDetailsPage() {
     }
 
     return list;
-  }, [customerId, mockTimeline, activeTab, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName, deletedIds]);
+  }, [
+    customerId,
+    mockTimeline,
+    activeTab,
+    onlyWithComment,
+    searchKeyword,
+    fromDay,
+    toDay,
+    selectedCarName,
+    deletedIds,
+  ]);
 
   const carNameOptions = useMemo(() => {
     return Array.from(
@@ -234,12 +244,14 @@ export default function UserDetailsPage() {
                             {item.type === 'purchase' && (
                               <span className="bg-yellow-100 text-sm font-medium">購入履歴</span>
                             )}
-                            {item.type === 'work' && <span className="bg-gray-100 text-sm font-medium">作業履歴</span>}
+                            {item.type === 'work' && (
+                              <span className="bg-purple-100 text-sm font-medium">作業履歴</span>
+                            )}
                             {item.type === 'inspection' && (
                               <span className="bg-green-100 text-sm font-medium">査定履歴</span>
                             )}
                             {item.type === 'reservation' && (
-                              <span className="bg-gray-100 text-sm font-medium">作業予約</span>
+                              <span className="bg-purple-100 text-sm font-medium">作業予約</span>
                             )}
                             {item.type === 'consideration' && (
                               <span className="bg-yellow-100 text-sm font-medium">検討中パーツ</span>
@@ -316,7 +328,6 @@ export default function UserDetailsPage() {
                 </div>
               )} */}
               {activeTab === 'reservation' && <ReservationTab items={reservationTimeline} />}
-
 
               {activeTab === 'work' && (
                 <div className="p-4">

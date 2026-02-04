@@ -1,11 +1,10 @@
 'use client';
 import { TimelineItem } from '@/mocks/timeline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMessage } from '@fortawesome/free-solid-svg-icons';
+import { faMessage, faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { useState, useMemo, useEffect } from 'react';
 import { Pagination } from '@/components/layout/Pagination';
 import { TimelineFilterBar } from '@/components/FilterBar';
-import Link from 'next/link';
 
 type Props = {
   items: Extract<TimelineItem, { type: 'reservation' }>[];
@@ -89,7 +88,7 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
   if (items.length === 0) {
     return (
       <div className="p-4">
-        <p className="text-gray-500">購入履歴がありません</p>
+        <p className="text-gray-500">予約がありません</p>
       </div>
     );
   }
@@ -113,6 +112,13 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
           onlyWithComment={onlyWithComment}
           onOnlyWithCommentChange={setOnlyWithComment}
         />
+        <div className="flex items-center p-4 border-b-2">
+          <h2 className="text-xl font-semibold mb-4">予約一覧</h2>
+        </div>
+        <p className="p-2">ご予約が完了してから予約一覧に反映されるまで1分ほど時間がかかります。</p>
+        <div className="flex items-center p-4 border-b-1 border-gray-300">
+          <h2 className="text-xl font-semibold mb-4">買取予約</h2>
+        </div>
         {paginatedItems.map((item) => (
           <div key={item.id} className="flex items-center gap-4 py-3 border-b border-gray-300">
             {/* ===== 左:画像 ===== */}
@@ -137,7 +143,7 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
 
             {/* ===== 履歴種別 ===== */}
             <div className="w-24">
-              <span className="bg-yellow-100 text-sm font-medium">購入履歴</span>
+              <span className="bg-purple-100 text-sm font-medium">作業予約</span>
             </div>
 
             {/* ===== タイトル ===== */}
@@ -154,14 +160,15 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
               <div className="flex items-center gap-6 text-sm text-gray-500">
                 <span>{item.store_name}</span>
 
-                <Link href={`/purchase/${item.id}`} className="text-gray-400 hover:text-gray-600">
-                  ＞
-                </Link>
+                <span className="text-gray-300">＞</span>
               </div>
             </div>
           </div>
         ))}
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        <div className="flex items-center p-4 border-b-1 border-gray-300">
+          <h2 className="text-xl font-semibold mb-4">UPPIT(持込取付予約)</h2>
+        </div>
       </div>
     </div>
   );
