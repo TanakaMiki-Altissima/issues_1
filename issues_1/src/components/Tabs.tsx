@@ -21,7 +21,7 @@ const tabColorMap: Record<string, string> = {
   red: 'bg-red-100',
   yellow: 'bg-yellow-100',
   green: 'bg-green-100',
-  gray: 'bg-gray-100',
+  purple: 'bg-purple-100',
 };
 
 const textColorMap: Record<string, string> = {
@@ -29,7 +29,7 @@ const textColorMap: Record<string, string> = {
   red: 'text-red-600',
   yellow: 'text-yellow-600',
   green: 'text-green-600',
-  gray: 'text-gray-600',
+  purple: 'text-purple-600',
 };
 
 const bgColorMap: Record<string, string> = {
@@ -37,7 +37,7 @@ const bgColorMap: Record<string, string> = {
   red: 'bg-red-100',
   yellow: 'bg-yellow-100',
   green: 'bg-green-100',
-  gray: 'bg-gray-100',
+  purple: 'bg-purple-100',
 };
 
 export function Tabs({ tabs, activeTab, onChange }: Props) {

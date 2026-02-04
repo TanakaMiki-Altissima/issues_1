@@ -12,6 +12,7 @@ import { faHouse, faComment, faStar, faWrench, faMessage } from '@fortawesome/fr
 import { faClock, faChartBar } from '@fortawesome/free-regular-svg-icons';
 import { Pagination } from '@/components/layout/Pagination';
 import { PurchaseHistoryTab } from '@/components/tabs/PurchaseHistoryTab';
+import { ReservationTab } from '@/components/tabs/ReservationTab';
 import { mockTimeline } from '@/mocks/timeline';
 import Link from 'next/link';
 
@@ -63,8 +64,8 @@ export default function UserDetailsPage() {
     { id: 'purchase', label: '購入履歴', color: 'yellow', icon: faClock },
     { id: 'assessment', label: '査定中', color: 'green', icon: faChartBar },
     { id: 'buyback', label: '買取履歴', color: 'green', icon: faClock },
-    { id: 'reservation', label: '作業予約', color: 'gray', icon: faWrench },
-    { id: 'work', label: '作業履歴', color: 'gray', icon: faClock },
+    { id: 'reservation', label: '作業予約', color: 'purple', icon: faWrench },
+    { id: 'work', label: '作業履歴', color: 'purple', icon: faClock },
   ] as const;
 
   const getTabStyles = (tab: (typeof tabs)[0]) => {
@@ -83,7 +84,7 @@ export default function UserDetailsPage() {
     red: 'bg-red-100',
     yellow: 'bg-yellow-100',
     green: 'bg-green-100',
-    gray: 'bg-gray-100',
+    purple: 'bg-purple-100',
   } as const;
 
   const [onlyWithComment, setOnlyWithComment] = useState(false);
@@ -145,6 +146,10 @@ export default function UserDetailsPage() {
 
   const purchaseTimeline = useMemo(() => {
     return filteredTimeline.filter((item) => item.type === 'purchase');
+  }, [filteredTimeline]);
+
+  const reservationTimeline = useMemo(() => {
+    return filteredTimeline.filter((item) => item.type === 'reservation');
   }, [filteredTimeline]);
 
   useEffect(() => {
@@ -304,12 +309,14 @@ export default function UserDetailsPage() {
                 </div>
               )}
 
-              {activeTab === 'reservation' && (
+              {/* {activeTab === 'reservation' && (
                 <div className="p-4">
                   <h2 className="text-xl font-semibold mb-4">作業予約</h2>
                   <p>作業予約内容</p>
                 </div>
-              )}
+              )} */}
+              {activeTab === 'reservation' && <ReservationTab items={reservationTimeline} />}
+
 
               {activeTab === 'work' && (
                 <div className="p-4">
