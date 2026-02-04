@@ -293,6 +293,7 @@ export default function PurchaseDetailPage() {
 
                       <div className="flex gap-2">
                         {/* 店舗 */}
+                        担当
                         <select
                           className="border rounded px-2 text-sm"
                           value={selectedStore}

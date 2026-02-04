@@ -96,8 +96,6 @@ export default function UserDetailsPage() {
   const filteredTimeline = useMemo(() => {
     let list = mockTimeline;
 
-    list = list.filter((item) => item.ownerId === customerId);
-
     // ★ 削除されたIDを除外
     list = list.filter((item) => !deletedIds.has(item.id));
 
@@ -132,7 +130,7 @@ export default function UserDetailsPage() {
     }
 
     return list;
-  }, [customerId, mockTimeline, activeTab, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName]);
+  }, [customerId, mockTimeline, activeTab, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName, deletedIds]);
 
   const carNameOptions = useMemo(() => {
     return Array.from(
