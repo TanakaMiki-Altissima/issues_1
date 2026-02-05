@@ -3,7 +3,6 @@ import { TimelineItem } from '@/mocks/timeline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMessage, faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { useState, useMemo, useEffect } from 'react';
-import { Pagination } from '@/components/layout/Pagination';
 import { TimelineFilterBar } from '@/components/FilterBar';
 
 type Props = {
@@ -20,6 +19,8 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
   const [onlyWithComment, setOnlyWithComment] = useState(false);
   const [selectedCarName, setSelectedCarName] = useState('');
 
+  const [showPast, setShowPast] = useState(false);
+
   const septemberDays = Array.from({ length: 30 }, (_, i) => i + 1);
 
   const carNameOptions = useMemo(() => Array.from(new Set(items.map((i) => i.car_name).filter(Boolean))), [items]);
@@ -29,6 +30,24 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
     const m = s.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
     if (!m) return null;
     return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  };
+
+  const formatJapaneseDate = (s?: string) => {
+    const d = parseDotDate(s);
+    if (!d) return s;
+
+    return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+  };
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const isPastReservation = (date?: string) => {
+    const d = parseDotDate(date);
+    if (!d) return false;
+
+    d.setHours(0, 0, 0, 0);
+    return d < today;
   };
 
   // フィルタリングされたアイテムを計算
@@ -66,24 +85,24 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
       list = list.filter((item) => item.car_name === selectedCarName);
     }
 
-    return list;
-  }, [items, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName]);
+    if (!showPast) {
+      list = list.filter((item) => {
+        const d = parseDotDate(item.date);
+        if (!d) return false;
 
-  // 総ページ数を計算（フィルタリング後のアイテム数で計算）
-  const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(filteredItems.length / itemsPerPage));
-  }, [filteredItems.length, itemsPerPage]);
+        d.setHours(0, 0, 0, 0);
+        return d >= today;
+      });
+    }
+
+    return list;
+  }, [items, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName, showPast]);
 
   // 現在のページに表示するアイテムを計算（フィルタリング後のアイテムから計算）
   const paginatedItems = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return filteredItems.slice(start, start + itemsPerPage);
   }, [filteredItems, currentPage, itemsPerPage]);
-
-  // フィルタが変更されたときにページを1に戻す
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [onlyWithComment, searchKeyword]);
 
   if (items.length === 0) {
     return (
@@ -95,7 +114,7 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
 
   return (
     <div className="p-4">
-      <div className="space-y-3">
+      <div>
         <TimelineFilterBar
           inputKeyword={inputKeyword}
           onInputKeywordChange={setInputKeyword}
@@ -119,55 +138,95 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
         <div className="flex items-center p-4 border-b-1 border-gray-300">
           <h2 className="text-xl font-semibold mb-4">買取予約</h2>
         </div>
+        <div className="flex justify-center mb-4">
+          <div className="inline-flex  p-1 justify-center gap-2 mb-4 rounded border border-gray-300">
+            <button
+              onClick={() => setShowPast(false)}
+              className={`px-4 py-2 rounded border
+      ${!showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
+    `}
+            >
+              本日以降の予約のみ
+            </button>
+
+            <button
+              onClick={() => setShowPast(true)}
+              className={`px-4 py-2 rounded border
+      ${showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
+    `}
+            >
+              過去の予約も含む
+            </button>
+          </div>
+        </div>
+
         {paginatedItems.map((item) => (
-          <div key={item.id} className="flex items-center gap-4 py-3 border-b border-gray-300">
-            {/* ===== 左:画像 ===== */}
-            <div className="relative w-14 h-14 flex-shrink-0">
-              <img src="/car_white.png" alt="gazou" className="w-full h-full object-contain bg-blue-100" />
-
-              {/* コメントありアイコン */}
-              {item.comments && item.comments.length > 0 && (
-                <FontAwesomeIcon icon={faMessage} className="absolute -top-3 -right-3 text-orange-400 fa-2x" />
-              )}
-            </div>
-
-            {/* ===== 日付 & 車種 ===== */}
-            <div className="w-40">
-              <p className="text-sm text-gray-500">{item.date}</p>
-              {item.car_name ? (
-                <p className="text-sm text-gray-800">{item.car_name}</p>
-              ) : (
-                <p className="text-sm text-red-600">未設定</p>
-              )}
-            </div>
-
-            {/* ===== 履歴種別 ===== */}
-            <div className="w-24">
-              <span className="bg-purple-100 text-sm font-medium">作業予約</span>
-            </div>
-
-            {/* ===== タイトル ===== */}
-            <div className="flex-1">
-              <p className="font-medium">{item.title}</p>
-            </div>
-
-            {/* ===== 右端:価格 / 店舗 ===== */}
-            <div className="flex items-center gap-3 whitespace-nowrap">
-              {/* 金額 */}
-              <p className="text-gray-500">¥{item.price}</p>
-
-              {/* 店舗名 + ＞ */}
-              <div className="flex items-center gap-6 text-sm text-gray-500">
-                <span>{item.store_name}</span>
-
-                <span className="text-gray-300">＞</span>
+          <div
+            key={item.id}
+            className={`flex items-center gap-4 py-3 border-b border-gray-300
+    ${isPastReservation(item.date) ? 'bg-gray-100' : 'bg-white'}
+  `}
+          >
+            {/* ===== 日付 & 作業内容 ===== */}
+            <div className="w-40  mt-3 pl-2">
+              <p className="text-sm">
+                <FontAwesomeIcon icon={faCalendar} className="mr-1" />
+                {formatJapaneseDate(item.date)} {item.time}
+              </p>
+              <div className="flex items-center gap-3 text-sm mt-1">
+                <span className="font-bold">作業内容</span>
+                <span>{item.content}</span>
               </div>
+            </div>
+
+            {/* ===== 店舗 ===== */}
+            <div className="w-24">
+              <span className="text-sm font-bold">予約店舗</span>
+            </div>
+
+            <div className="flex-1">
+              <p className="font-sm text-blue-500">{item.store_name}</p>
+            </div>
+
+            {/* ===== ボタン ===== */}
+            <div className="flex-1 flex justify-center">
+              <button className="px-5 py-2 rounded bg-blue-700 text-white">予約詳細</button>
             </div>
           </div>
         ))}
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        <div className="flex items-center justify-center gap-4 mt-6">
+          {/* ページネーション表示のみ */}
+          <button className="px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed">前へ</button>
+
+          <div className="flex items-center gap-2">
+            <button className="px-3 py-1 rounded bg-black text-white cursor-not-allowed">1</button>
+          </div>
+
+          <button className="px-3 py-1 rounded border border-gray-300 text-gray-400 cursor-not-allowed">次へ</button>
+        </div>
         <div className="flex items-center p-4 border-b-1 border-gray-300">
           <h2 className="text-xl font-semibold mb-4">UPPIT(持込取付予約)</h2>
+        </div>
+        <div className="flex justify-center mb-4">
+          <div className="inline-flex  p-1 justify-center gap-2 mb-4 rounded border border-gray-300">
+            <button
+              onClick={() => setShowPast(false)}
+              className={`px-4 py-2 rounded border
+      ${!showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
+    `}
+            >
+              本日以降の予約のみ
+            </button>
+
+            <button
+              onClick={() => setShowPast(true)}
+              className={`px-4 py-2 rounded border
+      ${showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
+    `}
+            >
+              過去の予約も含む
+            </button>
+          </div>
         </div>
       </div>
     </div>
