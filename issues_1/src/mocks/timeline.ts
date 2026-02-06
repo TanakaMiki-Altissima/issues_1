@@ -5,6 +5,20 @@ import { mockWorks } from './works';
 import { mockReservations } from './reservations';
 import { mockConsideration } from './consideration';
 
+type PurchaseComment = {
+  id: string;
+  datetime: string;
+  storeName: string;
+  staffName: string;
+  body: string;
+};
+
+type ReservationTimelineItem = BaseTimelineItem & {
+  type: 'reservation';
+  time: string;
+  content: string;
+};
+
 // 共通フィールド
 type BaseTimelineItem = {
   id: string;
@@ -14,14 +28,14 @@ type BaseTimelineItem = {
   title: string;
   price: string;
   store_name: string;
-  comment: string;
+  comments?: PurchaseComment[];
 };
 
 export type TimelineItem =
   | (BaseTimelineItem & { type: 'purchase' })
   | (BaseTimelineItem & { type: 'inspection' })
   | (BaseTimelineItem & { type: 'work' })
-  | (BaseTimelineItem & { type: 'reservation' })
+  | ReservationTimelineItem
   | (BaseTimelineItem & { type: 'consideration' });
 
 const parseDate = (date: string) => new Date(date.replace(/\./g, '-'));
@@ -29,13 +43,10 @@ const parseDate = (date: string) => new Date(date.replace(/\./g, '-'));
 /* =====================
    各タイムライン変換
 ===================== */
-
-export const purchaseTimeline: TimelineItem[] = mockPurchases.map((p, index) => ({
-  id: `purchase-${index}`,
-  type: 'purchase' as const,
+export const purchaseTimeline: TimelineItem[] = mockPurchases.map((p) => ({
   ...p,
+  type: 'purchase' as const,
 }));
-
 export const inspectionTimeline: TimelineItem[] = mockInspections.map((i, index) => ({
   id: `inspection-${index}`,
   type: 'inspection' as const,
@@ -48,10 +59,9 @@ export const workTimeline: TimelineItem[] = mockWorks.map((w, index) => ({
   ...w,
 }));
 
-export const reservationTimeline: TimelineItem[] = mockReservations.map((r, index) => ({
-  id: `reservation-${index}`,
-  type: 'reservation' as const,
+export const reservationTimeline: TimelineItem[] = mockReservations.map((r) => ({
   ...r,
+  type: 'reservation' as const,
 }));
 
 export const considerationTimeline: TimelineItem[] = mockConsideration.map((c, index) => ({
