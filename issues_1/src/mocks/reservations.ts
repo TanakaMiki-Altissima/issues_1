@@ -1,5 +1,6 @@
 // 作業予約
 export type Reservations = {
+  id: string;
   ownerId: string;
   date: string;
   car_name: string;
@@ -13,6 +14,7 @@ export type Reservations = {
 
 export const mockReservations: Reservations[] = [
   {
+    id: 'reservation-001',
     ownerId: '12345678901234',
     date: '2022.9.01',
     car_name: 'インプレッサスポーツ',
@@ -24,6 +26,7 @@ export const mockReservations: Reservations[] = [
     content: '買取予約',
   },
   {
+    id: 'reservation-002',
     ownerId: '12345678901234',
     date: '2026.3.01',
     car_name: 'インプレッサスポーツ',

@@ -1,8 +1,8 @@
 'use client';
 import { TimelineItem } from '@/mocks/timeline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMessage, faCalendar } from '@fortawesome/free-solid-svg-icons';
-import { useState, useMemo, useEffect } from 'react';
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { useState, useMemo } from 'react';
 import { TimelineFilterBar } from '@/components/FilterBar';
 
 type Props = {
@@ -11,7 +11,6 @@ type Props = {
 };
 
 export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
-  const [currentPage, setCurrentPage] = useState(1);
   const [inputKeyword, setInputKeyword] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [fromDay, setFromDay] = useState<number | ''>('');
@@ -98,11 +97,6 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
     return list;
   }, [items, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName, showPast]);
 
-  // 現在のページに表示するアイテムを計算（フィルタリング後のアイテムから計算）
-  const paginatedItems = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredItems.slice(start, start + itemsPerPage);
-  }, [filteredItems, currentPage, itemsPerPage]);
 
   if (items.length === 0) {
     return (
@@ -160,7 +154,7 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
           </div>
         </div>
 
-        {paginatedItems.map((item) => (
+        {filteredItems.map((item) => (
           <div
             key={item.id}
             className={`flex items-center gap-4 py-3 border-b border-gray-300
@@ -180,17 +174,17 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
             </div>
 
             {/* ===== 店舗 ===== */}
-           
-            <div className="w-24 ml-6">
+           <div className="w-12" />
+            <div className="w-24">
               <span className="text-sm font-bold">予約店舗</span>
             </div>
 
-            <div className="mr-12">
+            <div className="mr-6">
               <p className="text-sm text-blue-500">{item.store_name}</p>
             </div>
           
             {/* ===== ボタン ===== */}
-            <div className="flex-1 justify-center">
+            <div className="flex justify-center">
               <button className="px-5 py-2 rounded bg-blue-700 text-white">予約詳細</button>
             </div>
           </div>

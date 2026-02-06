@@ -59,10 +59,9 @@ export const workTimeline: TimelineItem[] = mockWorks.map((w, index) => ({
   ...w,
 }));
 
-export const reservationTimeline: TimelineItem[] = mockReservations.map((r, index) => ({
-  id: `reservation-${index}`,
-  type: 'reservation' as const,
+export const reservationTimeline: TimelineItem[] = mockReservations.map((r) => ({
   ...r,
+  type: 'reservation' as const,
 }));
 
 export const considerationTimeline: TimelineItem[] = mockConsideration.map((c, index) => ({
