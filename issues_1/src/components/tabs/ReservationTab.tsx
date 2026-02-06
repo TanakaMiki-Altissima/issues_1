@@ -180,16 +180,17 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
             </div>
 
             {/* ===== 店舗 ===== */}
-            <div className="w-24">
+           
+            <div className="w-24 ml-6">
               <span className="text-sm font-bold">予約店舗</span>
             </div>
 
-            <div className="flex-1">
-              <p className="font-sm text-blue-500">{item.store_name}</p>
+            <div className="mr-12">
+              <p className="text-sm text-blue-500">{item.store_name}</p>
             </div>
-
+          
             {/* ===== ボタン ===== */}
-            <div className="flex-1 flex justify-center">
+            <div className="flex-1 justify-center">
               <button className="px-5 py-2 rounded bg-blue-700 text-white">予約詳細</button>
             </div>
           </div>

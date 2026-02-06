@@ -13,6 +13,12 @@ type PurchaseComment = {
   body: string;
 };
 
+type ReservationTimelineItem = BaseTimelineItem & {
+  type: 'reservation';
+  time: string;
+  content: string;
+};
+
 // 共通フィールド
 type BaseTimelineItem = {
   id: string;
@@ -29,7 +35,7 @@ export type TimelineItem =
   | (BaseTimelineItem & { type: 'purchase' })
   | (BaseTimelineItem & { type: 'inspection' })
   | (BaseTimelineItem & { type: 'work' })
-  | (BaseTimelineItem & { type: 'reservation' })
+  | ReservationTimelineItem
   | (BaseTimelineItem & { type: 'consideration' });
 
 const parseDate = (date: string) => new Date(date.replace(/\./g, '-'));
