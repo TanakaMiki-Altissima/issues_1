@@ -97,7 +97,6 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
     return list;
   }, [items, onlyWithComment, searchKeyword, fromDay, toDay, selectedCarName, showPast]);
 
-
   if (items.length === 0) {
     return (
       <div className="p-4">
@@ -174,7 +173,7 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
             </div>
 
             {/* ===== 店舗 ===== */}
-           <div className="w-12" />
+            <div className="w-12" />
             <div className="w-24">
               <span className="text-sm font-bold">予約店舗</span>
             </div>
@@ -182,7 +181,7 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
             <div className="mr-6">
               <p className="text-sm text-blue-500">{item.store_name}</p>
             </div>
-          
+
             {/* ===== ボタン ===== */}
             <div className="flex justify-center">
               <button className="px-5 py-2 rounded bg-blue-700 text-white">予約詳細</button>

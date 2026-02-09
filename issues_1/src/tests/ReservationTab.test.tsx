@@ -9,7 +9,7 @@ describe('ReservationTab 日付フィルタ', () => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date('2026-02-06T00:00:00'));
   });
-  
+
   afterAll(() => {
     jest.useRealTimers();
   });
@@ -43,6 +43,14 @@ describe('ReservationTab 日付フィルタ', () => {
     },
   ];
 
+  test('予約一覧タブの基本要素が表示される', () => {
+    render(<ReservationTab items={mockReservation} />);
+
+    expect(screen.getByRole('heading', { name: '予約一覧' })).toBeInTheDocument();
+
+    expect(screen.getByRole('button', { name: '予約詳細' })).toBeInTheDocument();
+  });
+
   test('初期表示では本日以降の予約のみ表示される', () => {
     render(<ReservationTab items={mockReservation} />);
     expect(screen.getByText('2026年3月1日 12:30')).toBeInTheDocument();
@@ -50,35 +58,35 @@ describe('ReservationTab 日付フィルタ', () => {
   });
 
   test('過去の予約も含むを押すと、両方のトグルが過去表示状態になる', async () => {
-  const user = userEvent.setup({
-    advanceTimers: jest.advanceTimersByTime,
+    const user = userEvent.setup({
+      advanceTimers: jest.advanceTimersByTime,
+    });
+
+    render(<ReservationTab items={mockReservation} />);
+
+    const buttons = screen.getAllByRole('button', {
+      name: '過去の予約も含む',
+    });
+
+    await user.click(buttons[0]);
+
+    const todayOnlyButtons = screen.getAllByRole('button', {
+      name: '本日以降の予約のみ',
+    });
+
+    todayOnlyButtons.forEach((btn) => {
+      expect(btn).toHaveClass('bg-white');
+    });
+
+    const includePastButtons = screen.getAllByRole('button', {
+      name: '過去の予約も含む',
+    });
+
+    includePastButtons.forEach((btn) => {
+      expect(btn).toHaveClass('bg-black');
+    });
+
+    expect(screen.getByText('2026年3月1日 12:30')).toBeInTheDocument();
+    expect(screen.getByText('2022年9月1日 11:00')).toBeInTheDocument();
   });
-
-  render(<ReservationTab items={mockReservation} />);
-
-  const buttons = screen.getAllByRole('button', {
-    name: '過去の予約も含む',
-  });
-
-  await user.click(buttons[0]);
-
-  const todayOnlyButtons = screen.getAllByRole('button', {
-    name: '本日以降の予約のみ',
-  });
-
-  todayOnlyButtons.forEach((btn) => {
-    expect(btn).toHaveClass('bg-white');
-  });
-
-  const includePastButtons = screen.getAllByRole('button', {
-    name: '過去の予約も含む',
-  });
-
-  includePastButtons.forEach((btn) => {
-    expect(btn).toHaveClass('bg-black');
-  });
-
-  expect(screen.getByText('2026年3月1日 12:30')).toBeInTheDocument();
-  expect(screen.getByText('2022年9月1日 11:00')).toBeInTheDocument();
-});
 });
