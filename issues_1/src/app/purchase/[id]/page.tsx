@@ -268,15 +268,15 @@ export default function PurchaseDetailPage() {
                   <button
                     className="text-red-500 hover:underline text-sm text-left"
                     onClick={() => {
-  const ok = window.confirm('この購入履歴を削除してもよろしいですか？');
-  if (!ok) return;
+                      const ok = window.confirm('この購入履歴を削除してもよろしいですか？');
+                      if (!ok) return;
 
-  // 削除したIDを一時保存
-  sessionStorage.setItem('deletedPurchaseId', purchaseId);
+                      // 削除したIDを一時保存
+                      sessionStorage.setItem('deletedPurchaseId', purchaseId);
 
-  // 購入一覧へ戻る
-  router.push(`/users/${customerId}`);
-}}
+                      // 購入一覧へ戻る
+                      router.push(`/users/${customerId}`);
+                    }}
                   >
                     削除する
                   </button>
@@ -304,7 +304,6 @@ export default function PurchaseDetailPage() {
                           </option>
                           <option value="練馬店">練馬店</option>
                         </select>
-
                         <select
                           className="border rounded px-2 py-1 text-sm"
                           value={selectedStaff}
