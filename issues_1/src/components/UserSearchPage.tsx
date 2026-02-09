@@ -44,13 +44,16 @@ export function UserSearchPage() {
         <div className="flex flex-1 relative">
           <Sidebar />
           {/* ================= Main ================= */}
-          <main className="flex-1 flex justify-center items-center relative">
-            <div>
+          <main className="flex-1 flex justify-center items-center relative px-4 md:px-0">
+            <div className="w-full max-w-4xl">
               {/* Search */}
-              <div className="flex items-center gap-4">
-                <p className="font-medium">顧客情報の検索</p>
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
+                <p className="font-medium md:hidden">顧客情報の検索</p>
 
-                <div className="relative">
+                {/* PC用タイトル */}
+                <p className="hidden md:block font-medium">顧客情報の検索</p>
+
+                <div className="relative w-full md:w-auto">
                   <FontAwesomeIcon
                     icon={faMagnifyingGlass}
                     className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
@@ -61,7 +64,7 @@ export function UserSearchPage() {
                     value={searchKeyword}
                     onChange={(e) => setSearchKeyword(e.target.value)}
                     className="
-                    w-[280px]
+                    w-full md:w-[280px]
                     pl-9 pr-2 py-2
                     rounded
                     bg-gray-100
@@ -71,7 +74,10 @@ export function UserSearchPage() {
                   />
                 </div>
 
-                <button onClick={handleSearch} className="px-5 py-2 rounded bg-blue-700 text-white">
+                <button
+                  onClick={handleSearch}
+                  className="w-20 md:w-auto px-2 py-1.5 text-sm md:px-5 md:py-2 md:text-base rounded bg-blue-700 text-white"
+                >
                   検索
                 </button>
               </div>
