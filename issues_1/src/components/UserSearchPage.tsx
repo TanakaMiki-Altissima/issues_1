@@ -44,7 +44,7 @@ export function UserSearchPage() {
         <div className="flex flex-1 relative">
           <Sidebar />
           {/* ================= Main ================= */}
-          <main className="flex-1 flex justify-center items-center relative px-4 md:px-0">
+          <main className="flex-1 flex justify-center items-center relative px-4 md:px-0 overflow-x-hidden min-w-0">
             <div className="w-full max-w-4xl mx-auto">
               {/* Search */}
               <div className="flex flex-col gap-3 items-center md:flex-row md:items-center md:justify-center md:gap-4">
@@ -85,9 +85,9 @@ export function UserSearchPage() {
 
               {/* Customers */}
               {showResult && (
-                <div className="mt-8 overflow-x-auto md:overflow-visible">
-                  <div className="mt-8 w-[800px] bg-blue-100 rounded">
-                    <div className="grid grid-cols-[160px_160px_200px_1fr] px-4 py-3 font-semibold">
+                <div className="mt-8">
+                  <div className="w-full bg-blue-100 rounded">
+                    <div className="hidden md:grid grid-cols-[160px_160px_200px_1fr] px-4 py-3 font-semibold">
                       <div>Croooober ID</div>
                       <div>氏名</div>
                       <div>電話番号</div>
@@ -99,15 +99,34 @@ export function UserSearchPage() {
                         key={customer.crooooberId}
                         onClick={() => setSelectedCustomerId(customer.crooooberId)}
                         className={`
-                      grid grid-cols-[160px_160px_200px_1fr]
+                      grid grid-cols-1 md:grid-cols-[160px_160px_200px_1fr]
                       px-4 py-3 cursor-pointer bg-white border-b border-gray-300
                       ${selectedCustomerId === customer.crooooberId ? 'bg-blue-50' : 'hover:bg-gray-50'}
                     `}
                       >
-                        <div>{customer.crooooberId}</div>
-                        <div>{customer.name}</div>
-                        <div>{customer.phone}</div>
-                        <div>{customer.address}</div>
+                        {/* Croooober ID */}
+    <div>
+      <span className="text-xs text-gray-500 md:hidden">Croooober ID</span>
+      <div>{customer.crooooberId}</div>
+    </div>
+
+    {/* 氏名 */}
+    <div>
+      <span className="text-xs text-gray-500 md:hidden">氏名</span>
+      <div>{customer.name}</div>
+    </div>
+
+    {/* 電話番号 */}
+    <div>
+      <span className="text-xs text-gray-500 md:hidden">電話番号</span>
+      <div>{customer.phone}</div>
+    </div>
+
+    {/* 住所 */}
+    <div>
+      <span className="text-xs text-gray-500 md:hidden">住所</span>
+      <div>{customer.address}</div>
+    </div>
                       </div>
                     ))}
                   </div>
