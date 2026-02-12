@@ -104,29 +104,29 @@ export function UserSearchPage() {
                       ${selectedCustomerId === customer.crooooberId ? 'bg-blue-50' : 'hover:bg-gray-50'}
                     `}
                       >
-                        {/* Croooober ID */}
-    <div>
-      <span className="text-xs text-gray-500 md:hidden">Croooober ID</span>
-      <div>{customer.crooooberId}</div>
-    </div>
+                        {/* スマホ・タブレット時のCroooober ID */}
+                        <div>
+                          <span className="text-xs text-gray-500 md:hidden">Croooober ID</span>
+                          <div>{customer.crooooberId}</div>
+                        </div>
 
-    {/* 氏名 */}
-    <div>
-      <span className="text-xs text-gray-500 md:hidden">氏名</span>
-      <div>{customer.name}</div>
-    </div>
+                        {/* スマホ・タブレット時の氏名 */}
+                        <div>
+                          <span className="text-xs text-gray-500 md:hidden">氏名</span>
+                          <div>{customer.name}</div>
+                        </div>
 
-    {/* 電話番号 */}
-    <div>
-      <span className="text-xs text-gray-500 md:hidden">電話番号</span>
-      <div>{customer.phone}</div>
-    </div>
+                        {/* スマホ・タブレット時の電話番号 */}
+                        <div>
+                          <span className="text-xs text-gray-500 md:hidden">電話番号</span>
+                          <div>{customer.phone}</div>
+                        </div>
 
-    {/* 住所 */}
-    <div>
-      <span className="text-xs text-gray-500 md:hidden">住所</span>
-      <div>{customer.address}</div>
-    </div>
+                        {/* スマホ・タブレット時の住所 */}
+                        <div>
+                          <span className="text-xs text-gray-500 md:hidden">住所</span>
+                          <div>{customer.address}</div>
+                        </div>
                       </div>
                     ))}
                   </div>

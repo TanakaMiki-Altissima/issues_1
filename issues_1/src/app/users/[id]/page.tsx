@@ -171,23 +171,25 @@ export default function UserDetailsPage() {
   }, [filteredTimeline.length, itemsPerPage]);
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex flex-1">
-          <UserDetailsSide customerId={customerId} />
+        <main className="flex flex-1 overflow-hidden">
+          <div className="hidden md:block">
+            <UserDetailsSide customerId={customerId} />
+          </div>
 
           {/* ===== 右カラム ===== */}
-          <div className="flex-1 ml-6 min-w-0 overflow-x-hidden">
+          <div className="flex-1 md:ml-6 min-w-0 overflow-x-hidden">
             <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
             {/* タブ別コンテンツ */}
-            <div className="mt-6">
+            <div className="md:mt-6">
               {activeTab === 'top' && (
                 <>
                   <div className="flex items-center p-4 border-b-2 border-gray-300">
-                    <h2 className="text-xl font-semibold mb-6">取引履歴</h2>
+                    <h2 className="text-xl font-semibold md:mb-6">取引履歴</h2>
                   </div>
 
                   <TimelineFilterBar
@@ -321,12 +323,6 @@ export default function UserDetailsPage() {
                 </div>
               )}
 
-              {/* {activeTab === 'reservation' && (
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-4">作業予約</h2>
-                  <p>作業予約内容</p>
-                </div>
-              )} */}
               {activeTab === 'reservation' && <ReservationTab items={reservationTimeline} />}
 
               {activeTab === 'work' && (
@@ -335,6 +331,11 @@ export default function UserDetailsPage() {
                   <p>作業履歴内容</p>
                 </div>
               )}
+            </div>
+
+            {/* モバイル用（下部固定） */}
+            <div className="md:hidden w-full bg-white  mt-4 border-t border-gray-300 z-40">
+              <UserDetailsSide customerId={customerId} />
             </div>
           </div>
         </main>
