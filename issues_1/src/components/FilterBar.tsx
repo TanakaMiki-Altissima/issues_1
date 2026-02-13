@@ -43,9 +43,9 @@ export function TimelineFilterBar({
   return (
     <>
       {/* 上段：検索・絞り込み */}
-      <div className="flex items-center p-4 border-b border-gray-300">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 p-4 border-b border-gray-300">
         {/* 左：キーワード */}
-        <div className="flex items-center gap-4">
+        <div className="flex justify-center gap-3 w-full md:w-auto">
           <div className="relative">
             <FontAwesomeIcon
               icon={faMagnifyingGlass}
@@ -55,10 +55,10 @@ export function TimelineFilterBar({
               placeholder="キーワードで検索"
               value={inputKeyword}
               onChange={(e) => onInputKeywordChange(e.target.value)}
-              className="w-[280px] pl-9 pr-2 py-2 rounded bg-gray-100 text-gray-600 outline-none"
+              className="w-full sm:w-[280px] pl-9 pr-2 py-2 rounded bg-gray-100 text-gray-600 outline-none"
             />
           </div>
-          <button className="px-5 py-2 rounded bg-blue-700 text-white" onClick={onSearch}>
+          <button className="px-5 py-2 rounded bg-blue-700 text-white whitespace-nowrap" onClick={onSearch}>
             検索
           </button>
         </div>
@@ -95,7 +95,7 @@ export function TimelineFilterBar({
         </div>
 
         {/* 右：登録車 */}
-        <div className="flex items-center gap-6 ml-auto">
+        <div className="flex justify-center w-full md:w-auto md:ml-auto">
           <select
             value={selectedCarName}
             onChange={(e) => onCarChange(e.target.value)}

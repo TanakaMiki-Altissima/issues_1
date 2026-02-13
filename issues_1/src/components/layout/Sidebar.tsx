@@ -36,10 +36,11 @@ export function Sidebar() {
         <button onClick={handleToggleClick} className="my-2 text-[18px] text-blue-700 cursor-pointer">
           ＞
         </button>
-
-        <MenuButton title="買取査定" onHover={() => setHoveredMenu('purchase')} />
-        <MenuButton title="入庫" onHover={() => setHoveredMenu('stock')} />
-        <MenuButton title="顧客情報" onHover={() => setHoveredMenu('customer')} />
+        <div className="hidden md:flex md:flex-col md:items-center w-full">
+          <MenuButton title="買取査定" onHover={() => setHoveredMenu('purchase')} />
+          <MenuButton title="入庫" onHover={() => setHoveredMenu('stock')} />
+          <MenuButton title="顧客情報" onHover={() => setHoveredMenu('customer')} />
+        </div>
       </aside>
 
       {/* ================= All Menu ================= */}
