@@ -50,7 +50,18 @@ export function Tabs({ tabs, activeTab, onChange }: Props) {
       <div className="md:hidden border-b border-gray-300">
         <div className="flex justify-between items-center px-4 py-2">
           {/* 現在のタブ名表示 */}
-          <span className="font-semibold">{tabs.find((t) => t.id === activeTab)?.label}</span>
+          {(() => {
+            const currentTab = tabs.find((t) => t.id === activeTab);
+
+            if (!currentTab) return null;
+
+            return (
+              <div className={`flex items-center gap-2 font-semibold ${textColorMap[currentTab.color]}`}>
+                <FontAwesomeIcon icon={currentTab.icon} />
+                <span>{currentTab.label}</span>
+              </div>
+            );
+          })()}
 
           {/* ハンバーガーボタン */}
           <button onClick={() => setIsOpen(!isOpen)}>
@@ -61,18 +72,26 @@ export function Tabs({ tabs, activeTab, onChange }: Props) {
         {/* 開いたときのメニュー */}
         {isOpen && (
           <div className="flex flex-col bg-white border-t border-gray-200">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  onChange(tab.id);
-                  setIsOpen(false);
-                }}
-                className="px-4 py-3 text-left hover:bg-gray-100"
-              >
-                {tab.label}
-              </button>
-            ))}
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    onChange(tab.id);
+                    setIsOpen(false);
+                  }}
+                  className={`
+            px-4 py-3 text-left hover:bg-gray-100
+            ${isActive ? `bg-white border-l-4 ${textColorMap[tab.color]}` : `${bgColorMap[tab.color]} text-gray-700`}
+          `}
+                >
+                  <FontAwesomeIcon icon={tab.icon} />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
