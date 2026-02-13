@@ -223,15 +223,15 @@ export default function UserDetailsPage() {
                             <Link
                               href={href}
                               className="flex flex-col md:flex-row md:items-center gap-4 py-3
-                   border-b border-gray-300
-                   cursor-pointer transition-colors"
+                                         border-b border-gray-300
+                                         cursor-pointer transition-colors"
                             >
                               {children}
                             </Link>
                           ) : (
                             <div
                               className="flex flex-col md:flex-row md:items-center gap-4 py-3
-                   border-b border-gray-300"
+                                         border-b border-gray-300"
                             >
                               {children}
                             </div>
