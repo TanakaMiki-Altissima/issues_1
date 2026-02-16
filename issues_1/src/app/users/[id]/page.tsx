@@ -68,25 +68,6 @@ export default function UserDetailsPage() {
     { id: 'work', label: '作業履歴', color: 'purple', icon: faClock },
   ] as const;
 
-  const getTabStyles = (tab: (typeof tabs)[0]) => {
-    const isActive = activeTab === tab.id;
-    const baseStyles = 'w-20 px-6 py-4 transition-colors';
-
-    if (isActive) {
-      return `${baseStyles} bg-${tab.color}-300 text-${tab.color}-900`;
-    }
-
-    return `${baseStyles} bg-${tab.color}-100 hover:bg-white hover:text-${tab.color}-700`;
-  };
-
-  const tabColorMap = {
-    blue: 'bg-blue-100',
-    red: 'bg-red-100',
-    yellow: 'bg-yellow-100',
-    green: 'bg-green-100',
-    purple: 'bg-purple-100',
-  } as const;
-
   const [onlyWithComment, setOnlyWithComment] = useState(false);
 
   const [selectedCarName, setSelectedCarName] = useState('');
@@ -174,7 +155,10 @@ export default function UserDetailsPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex flex-1">
-        <Sidebar />
+        {/* PC専用 Sidebar */}
+        <div className="hidden md:block">
+          <Sidebar />
+        </div>
         <main className="flex flex-1 overflow-hidden">
           <div className="hidden md:block">
             <UserDetailsSide customerId={customerId} />

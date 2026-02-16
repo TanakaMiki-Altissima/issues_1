@@ -30,10 +30,17 @@ export function Sidebar() {
     <>
       {/* ================= Sidebar ================= */}
       <aside
-        className="w-[49px] border-r border-gray-300 flex flex-col items-center"
+        className="w-[49px] flex flex-col items-center
+                   md:border-r md:border-gray-300
+                   md:h-screen
+                   bg-transparent"
         onMouseLeave={() => setHoveredMenu(null)}
       >
-        <button onClick={handleToggleClick} className="my-2 text-[18px] text-blue-700 cursor-pointer">
+        <button
+          onClick={handleToggleClick}
+          className="md:my-2 text-[18px] text-blue-700 cursor-pointer md:bg-transparent md:border-none border rounded-full w-8 h-8
+                     flex items-center justify-center"
+        >
           ＞
         </button>
         <div className="hidden md:flex md:flex-col md:items-center w-full">

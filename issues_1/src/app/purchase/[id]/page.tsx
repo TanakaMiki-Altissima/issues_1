@@ -20,7 +20,14 @@ export default function PurchaseDetailPage() {
   const [purchase, setPurchase] = useState(originalPurchase);
   const [editPurchase, setEditPurchase] = useState(originalPurchase);
 
-  const customerId = purchase?.ownerId;
+  if (!purchase) {
+    return (
+      <div>
+        <p>購入履歴がありません</p>
+      </div>
+    );
+  }
+  const customerId = purchase.ownerId;
 
   const router = useRouter();
 
@@ -38,19 +45,6 @@ export default function PurchaseDetailPage() {
     { id: 'reservation', label: '作業予約', color: 'gray', icon: faWrench },
     { id: 'work', label: '作業履歴', color: 'gray', icon: faClock },
   ] as const;
-
-  const getTabStyles = (tab: (typeof tabs)[0]) => {
-    const baseStyles = 'w-20 px-6 py-4 transition-colors';
-    return `${baseStyles} bg-${tab.color}-100 hover:bg-white hover:text-${tab.color}-700`;
-  };
-
-  const tabColorMap = {
-    blue: 'bg-blue-100',
-    red: 'bg-red-100',
-    yellow: 'bg-yellow-100',
-    green: 'bg-green-100',
-    gray: 'bg-gray-100',
-  } as const;
 
   const displayPurchase = isEditing ? editPurchase : purchase;
 
@@ -89,13 +83,9 @@ export default function PurchaseDetailPage() {
       <div className="flex flex-1">
         <Sidebar />
         <main className="flex flex-1">
-          {customerId ? (
+          <div className="hidden md:block">
             <UserDetailsSide customerId={customerId} />
-          ) : (
-            <div className="w-[300px] h-full border-r border-gray-300 p-4">
-              <p>購入履歴がありません</p>
-            </div>
-          )}
+          </div>
           <div className="pl-4 flex-1 ">
             <Tabs tabs={tabs} activeTab={activeTab} onChange={() => {}} />
             <div className="border-b-2 border-gray-400">
@@ -104,7 +94,7 @@ export default function PurchaseDetailPage() {
 
             {purchase ? (
               <div className="space-y-4">
-                <div className="flex items-center gap-6">
+                <div className="flex flex-col gap-2 md:gap-6">
                   <div className="flex-shrink-0">
                     {purchase.image && (
                       <img src={`/${purchase.image}`} alt={purchase.car_name} className="w-15 h-15 object-contain" />
@@ -186,11 +176,11 @@ export default function PurchaseDetailPage() {
                     )}
                   </div>
                 </div>
-                <div className="border-b-1 border-gray-400 flex p-2">
-                  <p className="text-sm text-gray-500 w-115 flex-shrink-0">メモ</p>
+                <div className="border-b-1 border-gray-400 flex p-2 gap-2">
+                  <p className="text-sm text-gray-500 md:w-115 md:w-40 flex-shrink-0">メモ</p>
 
                   {/* 中央配置用ラッパー */}
-                  <div className="flex-1 flex justify-center">
+                  <div className="flex-1 md:flex md:justify-center">
                     {/* 実体（背景を右端まで） */}
                     {isEditing ? (
                       <textarea
@@ -200,12 +190,12 @@ export default function PurchaseDetailPage() {
                         onChange={(e) => setEditPurchase({ ...editPurchase!, memo: e.target.value })}
                       />
                     ) : (
-                      <p className="w-full bg-gray-100 text-lg text-left p-2 lex-1  rounded">{displayPurchase?.memo}</p>
+                      <p className="w-full bg-gray-100 md:text-lg md:text-left p-2 rounded">{displayPurchase?.memo}</p>
                     )}
                   </div>
                 </div>
                 <div className="border-b-1 border-gray-400 flex p-2">
-                  <p className="text-sm text-gray-500 w-115 flex-shrink-0">商品URL</p>
+                  <p className="text-sm text-gray-500 pr-2 md:w-115 flex-shrink-0">商品URL</p>
                   {isEditing ? (
                     <input
                       className="border px-2 py-1 w-full"
@@ -213,12 +203,12 @@ export default function PurchaseDetailPage() {
                       onChange={(e) => setEditPurchase({ ...editPurchase!, url: e.target.value })}
                     />
                   ) : (
-                    <p className="font-medium text-lg text-blue-500 break-all">{displayPurchase?.url}</p>
+                    <p className="font-medium md:text-lg text-blue-500 break-all">{displayPurchase?.url}</p>
                   )}
                 </div>
                 {purchase.car_name && (
                   <div className="border-b-1 border-gray-400 flex p-2">
-                    <p className="text-sm text-gray-500 w-115 flex-shrink-0">取付車</p>
+                    <p className="text-sm text-gray-500 pr-2 md:w-115 flex-shrink-0">取付車</p>
                     {isEditing ? (
                       <input
                         className="border px-2 py-1"
@@ -288,8 +278,8 @@ export default function PurchaseDetailPage() {
 
                 {purchase.comments && (
                   <div className="col-span-2">
-                    <div className="flex items-center justify-between mb-4 p-4 border-b-1 border-gray-400">
-                      <p className="text-xl font-bold">管理コメント</p>
+                    <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-4 p-4 border-b-1 border-gray-400">
+                      <p className="text-md md:text-xl font-bold">管理コメント</p>
 
                       <div className="flex gap-2">
                         {/* 店舗 */}
@@ -333,7 +323,7 @@ export default function PurchaseDetailPage() {
                         </div>
                       </div>
                       <button
-                        className="bg-blue-500 text-white px-4 rounded hover:bg-blue-600 text-sm h-10 flex-shrink-0"
+                        className="bg-blue-500 text-white px-2 md:px-4 rounded hover:bg-blue-600 text-sm h-7 md:h-10 flex-shrink-0"
                         onClick={handleAddComment}
                       >
                         送信
@@ -362,6 +352,11 @@ export default function PurchaseDetailPage() {
                 <p className="text-sm text-gray-600 mt-2">購入ID: {purchaseId}</p>
               </div>
             )}
+
+            {/* モバイル用（下部固定） */}
+            <div className="md:hidden w-full bg-white  mt-4 border-t border-gray-300 z-40">
+              <UserDetailsSide customerId={customerId} />
+            </div>
           </div>
         </main>
       </div>

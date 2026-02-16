@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useState } from 'react';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { Sidebar } from '@/components/layout/Sidebar';
 
 type Tab = {
   id: string;
@@ -47,8 +48,11 @@ export function Tabs({ tabs, activeTab, onChange }: Props) {
   return (
     <div className="w-full">
       {/* スマホ・タブレット用 */}
-      <div className="md:hidden border-b border-gray-300">
+      <div className="md:hidden border-b border-gray-300 relative">
         <div className="flex justify-between items-center px-4 py-2">
+          <div className="absolute left-1 top-1/2 -translate-y-1/2">
+            <Sidebar />
+          </div>
           {/* 現在のタブ名表示 */}
           {(() => {
             const currentTab = tabs.find((t) => t.id === activeTab);
@@ -56,7 +60,7 @@ export function Tabs({ tabs, activeTab, onChange }: Props) {
             if (!currentTab) return null;
 
             return (
-              <div className={`flex items-center gap-2 font-semibold ${textColorMap[currentTab.color]}`}>
+              <div className={`flex items-center pl-12 gap-2 font-semibold ${textColorMap[currentTab.color]}`}>
                 <FontAwesomeIcon icon={currentTab.icon} />
                 <span>{currentTab.label}</span>
               </div>

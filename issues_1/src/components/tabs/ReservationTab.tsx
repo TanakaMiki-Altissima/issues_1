@@ -132,10 +132,10 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
           <h2 className="text-xl font-semibold mb-4">買取予約</h2>
         </div>
         <div className="flex justify-center mb-4">
-          <div className="inline-flex  p-1 justify-center gap-2 mb-4 rounded border border-gray-300">
+          <div className="inline-flex  p-1 justify-center gap-2 mb-4 mt-4 rounded border border-gray-300">
             <button
               onClick={() => setShowPast(false)}
-              className={`px-4 py-2 rounded border
+              className={`px-4 py-2 rounded border whitespace-nowrap
       ${!showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
     `}
             >
@@ -144,7 +144,7 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
 
             <button
               onClick={() => setShowPast(true)}
-              className={`px-4 py-2 rounded border
+              className={`px-4 py-2 rounded border whitespace-nowrap
       ${showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
     `}
             >
@@ -203,10 +203,10 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
           <h2 className="text-xl font-semibold mb-4">UPPIT(持込取付予約)</h2>
         </div>
         <div className="flex justify-center mb-4">
-          <div className="inline-flex  p-1 justify-center gap-2 mb-4 rounded border border-gray-300">
+          <div className="inline-flex  p-1 justify-center gap-2 mb-4 mt-4 rounded border border-gray-300">
             <button
               onClick={() => setShowPast(false)}
-              className={`px-4 py-2 rounded border
+              className={`px-4 py-2 rounded border whitespace-nowrap
       ${!showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
     `}
             >
@@ -215,7 +215,7 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
 
             <button
               onClick={() => setShowPast(true)}
-              className={`px-4 py-2 rounded border
+              className={`px-4 py-2 rounded border whitespace-nowrap
       ${showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
     `}
             >
