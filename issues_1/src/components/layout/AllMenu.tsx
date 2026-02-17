@@ -8,8 +8,8 @@ export function AllMenu({ onClose }: AllMenuProps) {
   return (
     <div
       className="
-        absolute top-0
-        w-[240px] h-full
+        fixed top-0
+        w-[240px] h-screen
         border-r border-gray-300
         p-4
         bg-white

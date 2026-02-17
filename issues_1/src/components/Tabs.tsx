@@ -49,8 +49,8 @@ export function Tabs({ tabs, activeTab, onChange }: Props) {
     <div className="w-full">
       {/* スマホ・タブレット用 */}
       <div className="md:hidden border-b border-gray-300 relative">
-        <div className="flex justify-between items-center px-4 py-2">
-          <div className="absolute left-1 top-1/2 -translate-y-1/2">
+        <div className="flex justify-between py-2">
+          <div className="flex inset-y-0">
             <Sidebar />
           </div>
           {/* 現在のタブ名表示 */}

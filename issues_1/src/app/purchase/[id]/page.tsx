@@ -81,12 +81,11 @@ export default function PurchaseDetailPage() {
     <div className="h-screen flex flex-col">
       <Header />
       <div className="flex flex-1">
-        <Sidebar />
         <main className="flex flex-1">
           <div className="hidden md:block">
             <UserDetailsSide customerId={customerId} />
           </div>
-          <div className="pl-4 flex-1 ">
+          <div className="md:pl-4 flex-1 ">
             <Tabs tabs={tabs} activeTab={activeTab} onChange={() => {}} />
             <div className="border-b-2 border-gray-400">
               <h1 className="text-xl font-bold mb-4">購入履歴</h1>

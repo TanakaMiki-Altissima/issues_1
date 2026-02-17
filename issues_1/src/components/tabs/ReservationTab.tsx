@@ -70,6 +70,8 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
         const d = parseDotDate(item.date);
         if (!d) return false;
 
+        if (d.getMonth() !== 8) return false;
+
         // 2022年9月の日付として固定
         const day = d.getDate();
 
