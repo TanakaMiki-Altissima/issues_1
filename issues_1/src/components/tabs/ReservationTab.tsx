@@ -70,6 +70,8 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
         const d = parseDotDate(item.date);
         if (!d) return false;
 
+        if (d.getMonth() !== 8) return false;
+
         // 2022年9月の日付として固定
         const day = d.getDate();
 
@@ -132,10 +134,10 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
           <h2 className="text-xl font-semibold mb-4">買取予約</h2>
         </div>
         <div className="flex justify-center mb-4">
-          <div className="inline-flex  p-1 justify-center gap-2 mb-4 rounded border border-gray-300">
+          <div className="inline-flex  p-1 justify-center gap-2 mb-4 mt-4 rounded border border-gray-300">
             <button
               onClick={() => setShowPast(false)}
-              className={`px-4 py-2 rounded border
+              className={`px-4 py-2 rounded border whitespace-nowrap
       ${!showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
     `}
             >
@@ -144,7 +146,7 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
 
             <button
               onClick={() => setShowPast(true)}
-              className={`px-4 py-2 rounded border
+              className={`px-4 py-2 rounded border whitespace-nowrap
       ${showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
     `}
             >
@@ -156,24 +158,25 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
         {filteredItems.map((item) => (
           <div
             key={item.id}
-            className={`flex items-center gap-4 py-3 border-b border-gray-300
+            className={`flex flex-col md:flex-row md:items-center gap-3 py-4 border-b border-gray-300
+
     ${isPastReservation(item.date) ? 'bg-gray-100' : 'bg-white'}
   `}
           >
             {/* ===== 日付 & 作業内容 ===== */}
-            <div className="w-40  mt-3 pl-2">
+            <div className="md:w-40  md:mt-3 pl-2">
               <p className="text-sm">
                 <FontAwesomeIcon icon={faCalendar} className="mr-1" />
                 {formatJapaneseDate(item.date)} {item.time}
               </p>
-              <div className="flex items-center gap-3 text-sm mt-1">
-                <span className="font-bold">作業内容</span>
+              <div className="flex flex-col md:flex-row md:items-center md:gap-3 text-sm mt-2">
+                <span className="font-bold mb-1">作業内容</span>
                 <span>{item.content}</span>
               </div>
             </div>
 
             {/* ===== 店舗 ===== */}
-            <div className="w-12" />
+            <div className="pl-2 md:w-12" />
             <div className="w-24">
               <span className="text-sm font-bold">予約店舗</span>
             </div>
@@ -183,8 +186,8 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
             </div>
 
             {/* ===== ボタン ===== */}
-            <div className="flex justify-center">
-              <button className="px-5 py-2 rounded bg-blue-700 text-white">予約詳細</button>
+            <div className="pl-2">
+              <button className="text-sm px-5 py-2 md:text-md rounded bg-blue-700 text-white">予約詳細</button>
             </div>
           </div>
         ))}
@@ -202,10 +205,10 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
           <h2 className="text-xl font-semibold mb-4">UPPIT(持込取付予約)</h2>
         </div>
         <div className="flex justify-center mb-4">
-          <div className="inline-flex  p-1 justify-center gap-2 mb-4 rounded border border-gray-300">
+          <div className="inline-flex  p-1 justify-center gap-2 mb-4 mt-4 rounded border border-gray-300">
             <button
               onClick={() => setShowPast(false)}
-              className={`px-4 py-2 rounded border
+              className={`px-4 py-2 rounded border whitespace-nowrap
       ${!showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
     `}
             >
@@ -214,7 +217,7 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
 
             <button
               onClick={() => setShowPast(true)}
-              className={`px-4 py-2 rounded border
+              className={`px-4 py-2 rounded border whitespace-nowrap
       ${showPast ? 'bg-black text-white text-sm' : 'bg-white text-gray-700 text-sm border-none'}
     `}
             >

@@ -28,9 +28,9 @@ export function UserDetailsSide({ customerId }: Props) {
   const customerCars = mockCustomer_cars.filter((car) => car.ownerId === customerId);
 
   return (
-    <div className="h-full border-r border-gray-300">
+    <div className="w-full h-full mb-6 md:w-[300px] border-gray-300 md:border-r">
       {/* 氏名・愛車・ボタン */}
-      <div className="w-[300px] h-full border-r border-gray-300">
+      <div className="w-full md:w-[300px] border-r border-gray-300">
         <div className="space-y-1 pt-4 mb-6 bg-blue-100 h-[130px] text-center">
           <div className="inline-block transform italic">
             <strong>Croooober ID</strong>

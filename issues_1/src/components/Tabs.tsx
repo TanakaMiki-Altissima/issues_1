@@ -2,6 +2,9 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { useState } from 'react';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { Sidebar } from '@/components/layout/Sidebar';
 
 type Tab = {
   id: string;
@@ -41,36 +44,93 @@ const bgColorMap: Record<string, string> = {
 };
 
 export function Tabs({ tabs, activeTab, onChange }: Props) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex gap-1 font-semibold">
-      {tabs.map((tab) => {
-        const isActive = activeTab === tab.id;
+    <div className="w-full">
+      {/* スマホ・タブレット用 */}
+      <div className="md:hidden border-b border-gray-300 relative">
+        <div className="flex justify-between py-2">
+          <div className="flex inset-y-0">
+            <Sidebar />
+          </div>
+          {/* 現在のタブ名表示 */}
+          {(() => {
+            const currentTab = tabs.find((t) => t.id === activeTab);
 
-        return (
-          <button
-            key={tab.id}
-            onClick={() => onChange(tab.id)}
-            className={`
-    flex-1 px-4 py-1 relative
-    ${isActive ? `bg-white ${textColorMap[tab.color]}` : bgColorMap[tab.color]}
-  `}
-          >
-            {isActive && (
-              <span
-                className={`
-            absolute top-0 left-0
-            h-[4px] w-full
-            ${tabColorMap[tab.color]}
-          `}
-              />
-            )}
+            if (!currentTab) return null;
 
-            <FontAwesomeIcon icon={tab.icon} />
-            <br />
-            <span>{tab.label}</span>
+            return (
+              <div className={`flex items-center gap-2 font-semibold ${textColorMap[currentTab.color]}`}>
+                <FontAwesomeIcon icon={currentTab.icon} />
+                <span>{currentTab.label}</span>
+              </div>
+            );
+          })()}
+
+          {/* ハンバーガーボタン */}
+          <button onClick={() => setIsOpen(!isOpen)}>
+            <FontAwesomeIcon icon={faBars} size="lg" />
           </button>
-        );
-      })}
+        </div>
+
+        {/* 開いたときのメニュー */}
+        {isOpen && (
+          <div className="flex flex-col bg-white border-t border-gray-200">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    onChange(tab.id);
+                    setIsOpen(false);
+                  }}
+                  className={`
+            px-4 py-3 text-left hover:bg-gray-100
+            ${isActive ? `bg-white border-l-4 ${textColorMap[tab.color]}` : `${bgColorMap[tab.color]} text-gray-700`}
+          `}
+                >
+                  <FontAwesomeIcon icon={tab.icon} />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* PC用（md以上） */}
+      <div className="hidden md:flex gap-1 font-semibold">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.id;
+
+          return (
+            <button
+              key={tab.id}
+              onClick={() => onChange(tab.id)}
+              className={`
+              flex-1 px-4 py-1 relative
+              ${isActive ? `bg-white ${textColorMap[tab.color]}` : bgColorMap[tab.color]}
+            `}
+            >
+              {isActive && (
+                <span
+                  className={`
+                  absolute top-0 left-0
+                  h-[4px] w-full
+                  ${tabColorMap[tab.color]}
+                `}
+                />
+              )}
+
+              <FontAwesomeIcon icon={tab.icon} />
+              <br />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
