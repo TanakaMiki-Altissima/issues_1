@@ -158,7 +158,7 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
         {filteredItems.map((item) => (
           <div
             key={item.id}
-            className={`flex flex-col gap-3 py-4 border-b border-gray-300
+            className={`flex flex-col md:flex-row md:items-center gap-3 py-4 border-b border-gray-300
 
     ${isPastReservation(item.date) ? 'bg-gray-100' : 'bg-white'}
   `}
@@ -169,8 +169,8 @@ export function ReservationTab({ items, itemsPerPage = 5 }: Props) {
                 <FontAwesomeIcon icon={faCalendar} className="mr-1" />
                 {formatJapaneseDate(item.date)} {item.time}
               </p>
-              <div className="flex flex-col md:gap-3 text-sm mt-1">
-                <span className="font-bold">作業内容</span>
+              <div className="flex flex-col md:flex-row md:items-center md:gap-3 text-sm mt-2">
+                <span className="font-bold mb-1">作業内容</span>
                 <span>{item.content}</span>
               </div>
             </div>

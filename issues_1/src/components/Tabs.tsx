@@ -60,7 +60,7 @@ export function Tabs({ tabs, activeTab, onChange }: Props) {
             if (!currentTab) return null;
 
             return (
-              <div className={`flex items-center pl-12 gap-2 font-semibold ${textColorMap[currentTab.color]}`}>
+              <div className={`flex items-center gap-2 font-semibold ${textColorMap[currentTab.color]}`}>
                 <FontAwesomeIcon icon={currentTab.icon} />
                 <span>{currentTab.label}</span>
               </div>

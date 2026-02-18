@@ -42,8 +42,8 @@ export default function PurchaseDetailPage() {
     { id: 'purchase', label: '購入履歴', color: 'yellow', icon: faClock },
     { id: 'assessment', label: '査定中', color: 'green', icon: faChartBar },
     { id: 'buyback', label: '買取履歴', color: 'green', icon: faClock },
-    { id: 'reservation', label: '作業予約', color: 'gray', icon: faWrench },
-    { id: 'work', label: '作業履歴', color: 'gray', icon: faClock },
+    { id: 'reservation', label: '作業予約', color: 'purple', icon: faWrench },
+    { id: 'work', label: '作業履歴', color: 'purple', icon: faClock },
   ] as const;
 
   const displayPurchase = isEditing ? editPurchase : purchase;
@@ -81,6 +81,9 @@ export default function PurchaseDetailPage() {
     <div className="h-screen flex flex-col">
       <Header />
       <div className="flex flex-1">
+        <div className="hidden md:block">
+          <Sidebar />
+        </div>
         <main className="flex flex-1">
           <div className="hidden md:block">
             <UserDetailsSide customerId={customerId} />
@@ -88,12 +91,12 @@ export default function PurchaseDetailPage() {
           <div className="md:pl-4 flex-1 ">
             <Tabs tabs={tabs} activeTab={activeTab} onChange={() => {}} />
             <div className="border-b-2 border-gray-400">
-              <h1 className="text-xl font-bold mb-4">購入履歴</h1>
+              <h1 className="text-xl font-bold mt-4 mb-4">購入履歴</h1>
             </div>
 
             {purchase ? (
               <div className="space-y-4">
-                <div className="flex flex-col gap-2 md:gap-6">
+                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
                   <div className="flex-shrink-0">
                     {purchase.image && (
                       <img src={`/${purchase.image}`} alt={purchase.car_name} className="w-15 h-15 object-contain" />

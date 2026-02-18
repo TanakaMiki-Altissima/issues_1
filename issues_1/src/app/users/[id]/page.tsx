@@ -153,6 +153,14 @@ export default function UserDetailsPage() {
     return Math.max(1, Math.ceil(filteredTimeline.length / itemsPerPage));
   }, [filteredTimeline.length, itemsPerPage]);
 
+  useEffect(() => {
+    const maxPage = Math.max(1, Math.ceil(filteredTimeline.length / itemsPerPage));
+
+    if (currentPage > maxPage) {
+      setCurrentPage(maxPage);
+    }
+  }, [filteredTimeline.length, currentPage, itemsPerPage]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
